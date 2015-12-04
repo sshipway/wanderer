@@ -49,9 +49,9 @@ someone around who does.
 
 Wanderer uses several of these. Here they are...
 
-SAVEFILE ---- the path of the file to be used for saved games
-NEWKEYS  ---- if you want to redefine the keys
-NEWNAME, NAME, USER ---- scanned in that order to get a name for the hiscore
+    SAVEFILE ---- the path of the file to be used for saved games
+    NEWKEYS  ---- if you want to redefine the keys
+    NEWNAME, NAME, USER ---- scanned in that order to get a name for the hiscore
                          table.
 
 The MSDOS port and save routines are courtesy of Greg Margo, who has also
