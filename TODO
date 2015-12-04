@@ -1,0 +1,37 @@
+1) On end of game do not clear the screen allow last stuff
+to be seen.
+
+2) Add PID to tempfile, check for a running proc with the same
+PID, otherwise overwrite the tempfile.
+
+3) change LOCK macro into a function that loops for a bit then
+asks if it should continue, then again ....
+
+4) Break out pathnames into pathnames.h
+
+5) Make it compile under Linux as well
+
+6) Put it out again.
+
+7) More neatening up - Posix style functions etc DONE
+ 
+8) replace error messages with perror();
+
+9) do not clear screen before printing score so that people can see
+   what went wrong. I probably put some curses commands in the wrong
+   place.  DONE
+
+10)Add comments especially at the beginning of functions. DONE
+
+11) Use curses functions to place the string "press any key to continue"
+    on the screen after death.
+
+12) Make the scores file handling more consistant with other BSD games.
+
+13) When a wrong passwd is entered, sleep(1) so that the message can
+be seen.
+
+14) put scorefile in /var/games  DONE makefile and wand_head.h DONE
+
+15) ....Maybe think about locking, but snake
+does not do that ... 

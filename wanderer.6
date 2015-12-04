@@ -1,0 +1,137 @@
+.TH WAND 6 "4 March 1988" "Newwords+ Manual"
+.\"@(#)wand.6 1.1 88/03/04 SMI;
+.SH NAME
+wand \- Runs the game "Wanderer".
+.SH SYNOPSIS
+wand [ -s | -e file | -m | -c | [ -f ] [ -r file ] | -v | -t file ]
+.SH DESCRIPTION
+Wanderer is a game similar to Boulderdash, Repton, XOR and others. A full
+description of how to play the game is given upon execution. The hiscore table
+holds only 15 scores, and the name displayed is taken from the environment
+variable NAME. If you wish to have a different alias without changing this
+variable, you can set the variable NEWNAME before playing by putting the
+command
+.PP
+setenv NEWNAME "My name"
+.PP
+and then typing update. Also, the keys may be redefined by setting the
+variable NEWKEYS in the same way - eg
+.PP
+setenv NEWKEYS 'aznm'
+.PP
+in your .cshrc to get the keys a,z,n,m. Note that the order is important.
+As well as these keys, '!' will show the whole map, '~' will jump levels,
+and '?' will provide help.
+.PP
+By using the -r option you can record the moves you make in a game. Use
+this facility to make solution files to mail to me with any screens you send.
+.PP
+The hiscore table editor is RESTRICTED under a password to prevent you all
+deleting each others hiscores. If you can get into it, type the number of the
+entry to delete it, and 0 to exit.
+.PP
+You can save games with the 'S' key, and restore with 'R'. If you want to put
+the files in a specific place, you can set the environment variable SAVENAME
+to the file - eg
+.PP
+setenv SAVENAME ~/.wanderersave
+.PP
+The help screen can be accessed by pressing '?'.
+.SH THE GAME
+The game consists of a number of screens which must be solved in succession
+unless the password for a later screen is known. Passwords for the screens are
+given on completion. To complete
+a screen, you must collect all the 'treasure',
+including all 'baby monsters', and then walk into the 'exit'. A
+full description of the objects in the game is available on the help
+screen, by pressing '?' during the game.
+.PP
+Also in the game are arrows, boulders and balloons, which move in different
+directions, off of one another and slopes, and sometimes through each
+other. These can sometimes be pushed, but more often than not they block your
+way to the treasures.
+By careful manipulation you should be able to make it to
+the exit after collecting all of the treasure.
+.PP
+The 'thingys' can be pushed in any direction by either you or by the boulders,
+arrows, and balloons. They will remain stationary if not pushed.
+.PP
+Points are awarded for collecting treasure or earth or
+for caging baby monsters or killing big monsters. Also for using the teleport
+and a bonus for completing the screen. If you use the password to jump levels,
+you do not recieve the bonus.
+.PP
+By pressing 'W' you can redraw the screen, and '#' will switch between the
+icon style and single character. '!' wil display the map in icon mode, and '?'
+will display the help screen. Finally, '~' will prompt for a password to jump
+levels. The masterpassword will give a prompt for the required level
+number, and then respond with the correct password before jumping. If the file
+'no_pws' is readable in the screens directory, then pressing '~' will just
+cause a request for the required screen number. On no account may anyone
+who has not given the masterpassword jump back a level.
+.SH THE EDITOR
+The argument give is the file used for editing. If this cannot be read,
+it is created. If it
+cannot be created, a file in /tmp is used. Also, if the file can be read
+but not written, a file in /tmp of the form '/tmp/screen.XXXX' is used
+where 'XXXX' is the current process id.
+.PP
+ The wanderer keys move the cursor about the edit window,
+where you can add any symbols requirse to the map. Pressing '"' will take the
+next keypress literally, so this method may be used to add certain lower case
+letters. A list of active characters is displayed down the righthand side
+of the screen with their meanings.
+.PP
+To play the game, press either 'p' to play with the iconic screen, or 'n'
+to play with the full screen. When you are in the game, you will recieve an
+extra 'memory' option on the righthand side of the screen. This allows you to
+'record' moves in a solution to be replayed after changes to the screen.
+.PP
+Pressing '(' will start recording from the beginning of the memory, and ')'
+will stop recording. At any point during recording, '-' will add a
+'checkpoint'. This will cause the program to return control to the user during
+playback when it reaches this point, without moving the memory pointer.
+Pressing '+' will then continue playing, or '&' will start recording from this
+point, leaving the previous data unaffected.
+.PP
+The play key is '*'. This will cause the recorded moves to be played back
+until either (1) you reach a checkpoint ( press '+' to continue ), (2) you
+reach the end of the recording, or (3) you die.
+To extend the recording in memory, play through to the end
+and then press '&'.
+.PP
+When in the editor, C-W will save the moves memory and C-R will load a file
+into the memory. The number of moves available can be changed with 'm', and
+the name of the screen with 'c'.
+.PP
+Pressing C will run a check on the screen file to find any errors or possible
+mistakes. Error messages starting '****' are fatal, and should certainly be
+fixed. Errors starting '++++' are only warnings about non-standard design.
+After each message press any key to see the next. This test facility can be
+used directly via the -t option.
+.PP
+When editing is finished, you can exit with 'q' to save the screen, or 'x' to
+leave without a save. This will prompt for confirmation.
+.SH AUTHOR
+Steven Shipway. maujp@uk.ac.warwick.cu
+.PP
+Later additions: editor added by play@nl.cwi, help command by jason@uucp.aeras
+.SH FLAGS
+-s flag lists high-score chart.
+.PP
+-e flag enters editor.
+.PP
+-m flag enters hiscore table editor.
+.PP
+-c flag reads credits.
+.PP
+-f flag starts game with full screen play.
+.PP
+-v flag prints version.
+.PP
+-t flag tests screen.
+.PP
+-r flag records keypresses into given file.
+.SH SEE ALSO
+dungeon, slay, adv, omega, hack, larn, moria, phantasia, /usr/games/*,
+/use/local/games/*

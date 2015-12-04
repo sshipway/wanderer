@@ -1,5 +1,5 @@
-# wanderer
-Wanderer text-based boulderdash clone game
+                        * W A N D E R E R *
+                ----------------------------------
 
     This program requires the header files string.h and curses.h, and
 the curses and termcap libraries libcurses.a and libtermcap.a. If your

@@ -1,0 +1,28 @@
+# Makefile for wanderer - modified by Bill Randle 6/30/88
+# modified again by play@cwi.nl
+# and again by me.. maujp@uk.ac.warwick.cu
+# and yet again by adb@bucsf.bu.edu
+
+OBJ = monsters.o m.o save.o jump.o display.o icon.o game.o read.o help.o fall.o scores.o edit.o encrypt.o
+
+CFLAGS = -O -s
+#CFLAGS = -g
+LIBS = -lcurses -ltermcap
+CC = cc
+
+all:	wanderer
+	@echo DONE
+
+wanderer:	$(OBJ)
+	$(CC) $(CFLAGS) -o wanderer $(OBJ) $(LIBS)
+
+convert: convert.c wand_head.h
+	$(CC) $(CFLAGS) -o convert convert.c
+
+$(OBJ): wand_head.h
+
+install:
+	@mkdir /usr/games/lib/wand
+	cp -r screens /usr/games/lib/wand
+	touch /usr/games/lib/wand/hiscores
+	mv wanderer /usr/games
