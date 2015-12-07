@@ -1,6 +1,7 @@
 /* File m.c */
 
 #include <sys/time.h>
+#include <stdlib.h>
 #include "wand_head.h"
 
 #define SCROLLING 0
