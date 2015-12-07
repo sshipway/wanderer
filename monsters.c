@@ -31,7 +31,7 @@ extern struct mon_rec start_of_list;
 struct mon_rec *make_monster(x,y)
 int x,y;
 {
-    char *malloc();
+    /* char *malloc(); */
     #define MALLOC (struct mon_rec *)malloc(sizeof(struct mon_rec))
     struct mon_rec *monster;
     if(tail_of_list->next == NULL)
