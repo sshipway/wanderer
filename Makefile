@@ -6,10 +6,9 @@
 
 OBJ = monsters.o m.o save.o jump.o display.o icon.o game.o read.o help.o fall.o scores.o edit.o encrypt.o
 
-CFLAGS = -O -s
-#CFLAGS = -g
+CFLAGS ?= -O -s
 LIBS = -lncurses 
-CC = cc
+CC ?= cc
 
 all:	wanderer
 	@echo DONE
