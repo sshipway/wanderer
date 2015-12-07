@@ -45,6 +45,23 @@ to run the makefile. You may need to edit the makefile so that it conforms
 with your system. If you dont know how to do this, there's bound to be
 someone around who does.
 
+##Compiling
+
+Under Linux, you will need GCC, ncurses-devel, and make.
+
+Edit `wand_head.h` and change at least HISCOREPATH, SCREENPATH, and anything 
+else that looks wrong.  Make sure that the directory SCREENPATH exists and 
+holds the screens.  Create an empty file for the hiscore file.
+
+Run `make` and it should build in a second or two.  Ignore the various warnings.
+
+Now you should be able to run `wanderer`.  If the screens are unavailable 
+it will give you an error.  
+
+There seems to be something weird in the environment variable retrieval that doesnt work
+properly under 64bit GCC; you get an invalid pointer for the name which segfaults
+when writing the highscore or the goodbye message.
+
 ##Environment variables
 
 Wanderer uses several of these. Here they are...
