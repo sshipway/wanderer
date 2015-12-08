@@ -8,6 +8,7 @@ OBJ = monsters.o m.o save.o jump.o display.o icon.o game.o read.o help.o fall.o 
 
 CFLAGS ?= -O -s
 CFLAGS += -std=c99 -Wall -Wextra
+CPPFLAGS += -D_POSIX_C_SOURCE=199309L
 LIBS = -lncurses 
 CC ?= cc
 

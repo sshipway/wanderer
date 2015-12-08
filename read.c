@@ -1,5 +1,9 @@
 /* File read.c */
 
+#include <sys/types.h>
+#include <err.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "wand_head.h"
 
 extern int inform_me();
@@ -44,12 +48,18 @@ int *maxmoves, num;
     {
         for(y = 0;y<NOOFROWS;y++)
         {
-            fgets(*row_ptr,ROWLEN + 2,fp);
+            if (fgets(*row_ptr,ROWLEN + 2,fp) == NULL) {
+                fprintf(stderr, "fgets error\n");
+                exit(EXIT_FAILURE);
+            }
             numr = strlen( *row_ptr ) - 1;
             while(numr < ROWLEN) (*row_ptr)[numr++] = ' ';
             row_ptr++;
         };
-        fgets(screen_name,60,fp);
+        if (fgets(screen_name,60,fp) == NULL) {
+            fprintf(stderr, "fgets error\n");
+            exit(EXIT_FAILURE);
+        }
         screen_name[61] = '\0';
         screen_name[strlen(screen_name)-1] = '\0';
         if(fscanf(fp,"%d",maxmoves) != 1)

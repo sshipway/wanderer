@@ -1,5 +1,8 @@
 /* File jump.c */
 
+#include <errno.h>
+#include <stdlib.h>
+#include <time.h>
 #include "wand_head.h"
 
 extern int debug_disp;
@@ -24,7 +27,10 @@ char *passwd;
                 return 0;
         fseek(fp,position,ftell(fp));
         while(fgetc(fp) != '\n');
-        fscanf(fp,"%s\n",passwd);
+        if (fscanf(fp,"%s\n",passwd) == EOF && errno != 0) {
+            fprintf(stderr, "fscanf error\n");
+            exit(EXIT_FAILURE);
+        }
         /* read a word into passwd */
         fclose(fp);
         return (1);
@@ -36,11 +42,8 @@ char *passwd;
 void showpass(num)
      int num;
 {
-    long position;
     char correct[20];
     char buffer[100];
-    FILE *fp;
-    char ch;
     if(no_passwords)
         return;
     if(!debug_disp)
@@ -53,7 +56,7 @@ void showpass(num)
     addstr(buffer);
     addstr("PRESS ANY KEY TO REMOVE IT AND CONTINUE                          \n");
     refresh();
-    ch = getch();
+    getch();
     if(!debug_disp)
         move(18,0);
     else
@@ -76,10 +79,9 @@ int jumpscreen(num)
     char word[20],
          buffer[100],
          correct[20];
-    int index=0, input;
-    char ch;
-    long position;
-    int  fp, scrn;
+    int index=0;
+    int scrn;
+    struct timespec t;
 
     if(no_passwords == 1) {
         if(!debug_disp)
@@ -183,7 +185,9 @@ int jumpscreen(num)
         move(18,0);
     addstr("PASSWORD NOT RECOGNISED!                    ");
     refresh();
-    usleep(750000);  /* Marina */
+    t.tv_sec = 0;
+    t.tv_nsec = 750000000;
+    nanosleep(&t, NULL);
     if(!debug_disp)
         move(16,0);
     else

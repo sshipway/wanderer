@@ -2,6 +2,7 @@
 
 #include "wand_head.h"
 
+int bang(int x, int y, int *mx, int *my, int sx, int sy, char *howdead);
 extern void draw_symbol();
 extern int debug_disp;
 extern char screen[NOOFROWS][ROWLEN+1];
