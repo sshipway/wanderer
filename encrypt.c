@@ -1,11 +1,13 @@
 /* File encrypt.c */
 
+#include <stdlib.h>
+#include <unistd.h>
 #include "wand_head.h"
 
 /* Uses seeded random xor to encrypt because setkey doesnt work on our
    system.                                                                 */
 
-crypt_file(name)
+void crypt_file(name)
 char *name;
 {
 char buffer[1024];

@@ -1,7 +1,9 @@
 /* File save.c */
 
-#include "wand_head.h"
 #include <errno.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include "wand_head.h"
 
 extern char screen[NOOFROWS][ROWLEN+1];
 extern int saved_game;
@@ -116,8 +118,6 @@ void restore_game(num, score, bell, maxmoves)
     struct        saved_game        s;
     struct        mon_rec        *mp, *tmp, tmp_monst;
     char        fname[128], *fp;
-    char        *m_terminate = NULL;
-    FILE        *fo;
     extern        char        *getenv();
 
     if ((char *)NULL == (fp = getenv("SAVENAME")))
@@ -127,9 +127,10 @@ void restore_game(num, score, bell, maxmoves)
         refresh();
         echo(); CBOFF;
         fp = fname;
-        fgets(fp,sizeof(fname),stdin); /* Marina Brown */
-        m_terminate=strchr(fp,'\n');
-        m_terminate="\0";           /* End Marina delta */
+        if (fgets(fp,sizeof(fname),stdin) == NULL) { /* Marina Brown */
+            fprintf(stderr, "fgets error\n");
+            exit(EXIT_FAILURE);
+        }
         CBON; noecho();
     }
     clear();

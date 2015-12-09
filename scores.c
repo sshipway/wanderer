@@ -1,5 +1,10 @@
 /* file scores.c */
 
+#include <err.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "wand_head.h"
 
 #ifdef  MSDOS        /* M001 */
@@ -8,8 +13,8 @@
 #define UNLOCK
 
 #else
-/*#define LOCK     flock( fp->_cnt , LOCK_EX ) /* peeked at stdio.h ! */
-/*#define UNLOCK   flock( fp->_cnt , LOCK_UN ) /*                     */
+/*#define LOCK     flock( fp->_cnt , LOCK_EX ) // peeked at stdio.h ! */
+/*#define UNLOCK   flock( fp->_cnt , LOCK_UN )                        */
 /* #define LOCK while((lock = creat(LOCKFILE,0))==-1) Not a good way  */
 
 #define LOCK if((lock = open(LOCKFILE, O_CREAT | O_TRUNC | O_WRONLY, "r"))==-1){errx (1,"%s","Lockfile creation failed\n"); exit(1);} /* Marina */
@@ -18,9 +23,7 @@
 
 #endif
 
-#ifndef   MSDOS        /* M001 */
-extern int getuid();
-#else
+#ifdef    MSDOS        /* M001 */
 #define   getuid()        0
 #endif
 
@@ -242,9 +245,8 @@ int  savescore(char *howdead,int score,int level,char *name)
 void delete_entry(int num)
 {
     score_entry table[ENTRIES + 22],
-                  *table_ptr = table,
-                new_entry,temp_entry;
-    int  numread,index = 1, numsaved, lock, output_value = 1;
+                  *table_ptr = table;
+    int  numread,index = 1, numsaved, lock;
     FILE *fp;
 
     LOCK;
@@ -280,7 +282,6 @@ void delete_entry(int num)
         if(numsaved < numread)
         {
             printf("ERROR! Only %d items saved from %d !\n",numsaved,numread);
-            output_value = 0;
         }
         fclose(fp);
     }
@@ -294,7 +295,7 @@ void delete_entry(int num)
 /************************
 *      erase_scores     *
 *************************/
-erase_scores()
+void erase_scores()
 {
     int erasenum;
     int numread;
@@ -311,7 +312,7 @@ erase_scores()
     if(strcmp(correct,MASTERPASSWORD))
     {
         printf("\nFoo, charlatan!\n");
-        return 0;
+        return;
     }
     numread = readtable(table_ptr);
     show_scores(table,numread);
@@ -320,7 +321,10 @@ erase_scores()
     for(;;)
     {
         printf("Number to erase (0 to exit): ");
-        scanf("%d",&erasenum);
+        if (scanf("%d",&erasenum) == EOF && errno != 0) {
+          fprintf(stderr, "scanf error\n");
+          exit(EXIT_FAILURE);
+        }
         printf("\n");
         if(erasenum == 0)
             break;

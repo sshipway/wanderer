@@ -1,5 +1,7 @@
 /* File game.c */
 
+#include <stdlib.h>
+#include <unistd.h>
 #include "wand_head.h"
 
 extern int move_monsters();
@@ -150,7 +152,11 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
          default:
               ch = getch();
         }
-        if((record_file != -1)&&(ch != 'q')) write(record_file,&ch,1);
+        if((record_file != -1)&&(ch != 'q'))
+            if (write(record_file,&ch,1) == -1) {
+                fprintf(stderr, "write error\n");
+                exit(EXIT_FAILURE);
+            }
         
         nx=x;
         ny=y;
@@ -380,7 +386,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
         #endif
             case ':': *score+=1;
                 move(3,48);
-                sprintf(buffer,"%d\t %d",*score,nf);
+                sprintf(buffer,"%ld\t %d",*score,nf);
                 (void) addstr(buffer);
             case ' ':
                 screen[y][x] = ' ';
@@ -411,7 +417,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     mx = my = -1;
                     *score+=100;
                     move(3,48);
-                    sprintf(buffer,"%d\t %d\t %d ",*score,nf,diamonds);
+                    sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
                     (void) addstr(buffer);
                     draw_symbol(50,11,' ');
                     move(12,56); addstr("              ");
@@ -494,7 +500,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     mx = my = -1;
                     *score+=100;
                     move(3,48);
-                    sprintf(buffer,"%d\t %d\t %d ",*score,nf,diamonds);
+                    sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
                     (void) addstr(buffer);
                     draw_symbol(50,11,' ');
                        move(12,56); addstr("              ");
@@ -542,7 +548,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     mx = my = -1;
                     *score+=100;
                     move(3,48);
-                    sprintf(buffer,"%d\t %d\t %d ",*score,nf,diamonds);
+                    sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
                     (void) addstr(buffer);
                     draw_symbol(50,11,' ');
                        move(12,56); addstr("              ");
@@ -616,7 +622,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     sy = y;
                     *score += 20;
                     move(3,48);
-                    sprintf(buffer,"%d\t %d\t %d ",*score,nf,diamonds);
+                    sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
                     (void) addstr(buffer);
                     if(!debug_disp)
                         display(sx,sy,frow,*score);

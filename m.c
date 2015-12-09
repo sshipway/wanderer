@@ -1,7 +1,10 @@
 /* File m.c */
 
 #include <sys/time.h>
+#include <getopt.h>
 #include <stdlib.h>
+#include <term.h>
+#include <unistd.h>
 #include "wand_head.h"
 
 #define SCROLLING 0
@@ -62,7 +65,7 @@ void show_credits(opt)
 int maxlines, linecount;
 FILE *fp;
 char ch, buffer[100];
-int inp ,nul;
+fd_set inp;
 struct timeval tv;
 
     sprintf(buffer,"%s/credits",SCREENPATH);
@@ -78,7 +81,6 @@ struct timeval tv;
         maxlines = tgetnum("li") - 3;
     }
     linecount = 0;
-    nul = 0;
     tv.tv_sec = 0;
     tv.tv_usec = 500000L;  /* half second between scrolls */
     while( fgets(buffer,100,fp) ) {
@@ -98,11 +100,14 @@ struct timeval tv;
                         linecount = 0;
                 }
             } else { /* opt == SCROLLING */
-                inp = 1;
                 printf("%s",buffer);
-                select(1,&inp,&nul,&nul,&tv);
-                if(inp) {
-                    read(0,&ch,1);
+                FD_ZERO(&inp);
+                FD_SET(0, &inp);
+                if (select(1,&inp,NULL,NULL,&tv) > 0) {
+                    if (read(0,&ch,1) == -1) {
+                        fprintf(stderr, "read error\n");
+                        exit(EXIT_FAILURE);
+                    }
                     if(ch == 'q') 
                         break;
                 }
@@ -126,13 +131,12 @@ struct timeval tv;
 char *get_name(void)
 {
 char *name;
-char *endchar;
 
     if((name = (char *)getenv("NEWNAME")) == NULL)
         if((name = (char *)getenv("NAME")) == NULL)
             if((name = (char *)getenv("FULLNAME")) == NULL)
                 if((name = (char *)getenv("USER")) == NULL)
-                          if((name = (char *)getenv("LOGNAME")) == NULL)
+                    if((name = (char *)getenv("LOGNAME")) == NULL)
 #define ASKNAME /* Marina */
 #ifdef        ASKNAME        /* M001 */
                     {
@@ -142,9 +146,10 @@ char *endchar;
                             exit(1);
                         }
                         printf("Name? "); fflush(stdout);
-                        fgets(name,80,stdin); /* get rid of gets Marina*/
-                        endchar=strchr(name,'\0'); 
-                        endchar='\0';
+                        if (fgets(name,80,stdin) == NULL) { /* get rid of gets Marina*/
+                            fprintf(stderr, "fgets error\n");
+                            exit(EXIT_FAILURE);
+                        }
                         if (name[0] == '\0')
                             name = "noname";
                     }
@@ -181,28 +186,29 @@ extern char *optarg;
 /***************************************
 *  Main Program  -- Comment by Marina  *
 ****************************************/
-main(int argc,char **argv)
+int main(int argc,char **argv)
 {
 char (*frow)[ROWLEN+1] = screen;
 long score = 0;
-int fp,
-    num = 1,
-    bell = 0,
-    maxmoves = 0,
-    x,y;
-char howdead[25],
-     buffer[100],
-     *name,
-     *keys,
-     *dead,ch;
+int fp;
+int num = 1;
+int _bell = 0;
+int maxmoves = 0;
+int x;
+int y;
+char howdead[25];
+char buffer[100];
+char *name;
+char *keys;
+char *dead;
 char c; 
 
 while(( c = getopt(argc,argv,"01k:et:r:fmCcvsi")) != -1 )
 {
     switch(c) 
     {
-        case '0': bell = 0; break;
-        case '1': bell = 1; break;
+        case '0': _bell = 0; break;
+        case '1': _bell = 1; break;
         case 'k': keys = optarg; break;
         case 'i': 
                 printf("\nWANDERER Copyright (C) 1988 S Shipway. Version %s.\n\n",VERSION);
@@ -280,7 +286,7 @@ if(!edit_mode) {
                 strcpy(howdead,"a non-existant screen");
                 break;
                 }
-            dead = playscreen(&num,&score,&bell,maxmoves,keys);
+            dead = playscreen(&num,&score,&_bell,maxmoves,keys);
             if ((dead != NULL) && (*dead == '~')) 
             {
                 num = (int)(dead[1]) - 1;
@@ -301,7 +307,7 @@ else
             for(y=0;y<NOOFROWS;y++)
                 screen[y][x] =  ' ';
         }
-    editscreen(num,&score,&bell,maxmoves,keys);
+    editscreen(num,&score,&_bell,maxmoves,keys);
     }
 /* END OF MAIN PROGRAM */
 
@@ -314,7 +320,7 @@ else
         echo();
         refresh();
         endwin();
-        printf("%s killed by %s with a score of %d on level %d.\n", 
+        printf("%s killed by %s with a score of %ld on level %d.\n",
                                             name,howdead,score,num); 
         printf("\nWANDERER (C)1988 S. Shipway\n");
         if((savescore(howdead,score,num,name) == 0)&&(score != 0))

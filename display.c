@@ -183,7 +183,7 @@ void redraw_screen(bell,maxmoves,num,score,nf,diamonds,mx,sx,sy,frow)
     move(1,48);
     (void) addstr("\tFound\tTotal");
     move(3,48);
-    (void) sprintf(buffer,"%d\t %d\t %d  ",score,nf,diamonds);
+    (void) sprintf(buffer,"%ld\t %d\t %d  ",score,nf,diamonds);
     (void) addstr(buffer);
     if(! edit_mode) {
         move(6,48);

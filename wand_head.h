@@ -37,8 +37,8 @@
 
 /* To disable the recording of hiscores from games restored from saves         */
 /* #define NO_RESTORED_GAME_HISCORES  */
-/* #define COMPARE_BY_NAME  /* define this to compare by name, not uid         */
-/* #define NO_ENCRYPTION /* define this to disable the savefile encryptor */
+/* #define COMPARE_BY_NAME  // define this to compare by name, not uid         */
+/* #define NO_ENCRYPTION // define this to disable the savefile encryptor */
 #define NOISY    /* do we want bells in the game ? */
 
                 /****** OTHER PARAMETERS ******/
@@ -138,6 +138,9 @@ extern  void editscreen(int ,int *,int *,int ,char *);
 extern  int check(int *,int *,int ,int ,int ,int ,int ,int ,char *);
 extern  int fall(int *,int *,int ,int ,int ,int ,char *);
 
+/* HELP.C */
+extern  void helpme();
+
 /* GAME.C */
 extern  struct mon_rec *make_monster(int ,int );
 extern  char *playscreen(int *,int *,int *,int ,char *);
@@ -162,7 +165,7 @@ extern  void restore_game(int *,int *,int *,int *,struct mon_rec *,struct mon_re
 /* SCORES.C */
 extern  int savescore(char *,int ,int ,char *);
 extern  void delete_entry(int );
-extern  int erase_scores(void);
+extern  void erase_scores(void);
 
 #else
 
@@ -178,6 +181,9 @@ extern  void editscreen();
 /* FALL.C */
 extern  int check();
 extern  int fall();
+
+/* HELP.C */
+extern  void helpme();
 
 /* GAME.C */
 extern  struct mon_rec *make_monster();
@@ -203,7 +209,7 @@ extern  void restore_game();
 /* SCORES.C */
 extern  int savescore();
 extern  void delete_entry();
-extern  int erase_scores();
+extern  void erase_scores();
 
 #endif
 

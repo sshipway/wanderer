@@ -1,5 +1,9 @@
 /* File edit.c */
 
+#include <errno.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <unistd.h>
 #include "wand_head.h"
 
 extern char *playscreen();
@@ -41,7 +45,7 @@ static char *inst[] = { "    O  Boulder",
 *                    exit and player numbers,            *
 *                    hanging boulders/arrows etc         *
 **********************************************************/
-check_legality()
+void check_legality()
 {
 int ercount,cages,hanging,bmons,tele,arrival,you,mons,exits;
 int x, y;
@@ -158,7 +162,7 @@ void readstring(str,size)
   }
 }
 
-clearbottom()
+void clearbottom()
 {
 move(20,0);
 addstr("                                                                            \n");
@@ -202,7 +206,7 @@ clearbottom();
 *          screen_save          *
 *  save and restore screen data *
 *********************************/
-screen_save(maxmoves)
+void screen_save(maxmoves)
 int maxmoves;
 {
 char file[90];
@@ -223,11 +227,11 @@ move(20,0);
 addstr("                                                                           "); refresh();
 oldname = edit_screen;
 if( file[0] ) edit_screen = file;
-for(y = 0; y<=NOOFROWS;y++)        /* make sure screen written */
+for(y = 0; y<NOOFROWS;y++)        /* make sure screen written */
     if(screen[y][ROWLEN-1] == ' ') /* correctly...             */
         screen[y][ROWLEN-1] = '-';
 wscreen(0,maxmoves);
-for(y = 0; y<=NOOFROWS;y++)
+for(y = 0; y<NOOFROWS;y++)
     if(screen[y][ROWLEN-1] == '-')
         screen[y][ROWLEN-1] = ' ';
 edit_screen = oldname;
@@ -236,7 +240,7 @@ edit_screen = oldname;
 /*********************************************
 *                 screen_read                *
 **********************************************/
-screen_read(maxmoves)
+void screen_read(maxmoves)
     int *maxmoves;
 {
     static char file[90];
@@ -254,7 +258,7 @@ screen_read(maxmoves)
     if( ! file[0] ) return;
     edit_screen = file;
     rscreen(0,maxmoves);
-    for(y = 0; y<=NOOFROWS;y++)
+    for(y = 0; y<NOOFROWS;y++)
         if(screen[y][ROWLEN-1] == '-')
             screen[y][ROWLEN-1] = ' ';
 }
@@ -264,7 +268,7 @@ screen_read(maxmoves)
 *              edit_save             *
 *  save and restore edit memory data *
 **************************************/
-edit_save()
+void edit_save()
 {
     char file[90];
     int i = 0,fd;
@@ -286,7 +290,7 @@ edit_save()
 /*******************************************
 *                edit_restore              *
 ********************************************/
-edit_restore()
+void edit_restore()
 {
 char file[90];
 int i = 0,fd;
@@ -417,7 +421,11 @@ while(!quit)
         move(21,0);
         addstr("How many moves for this screen? :");
         refresh();echo();
-        scanf("%d",&maxmoves);noecho();
+        if (scanf("%d",&maxmoves) == EOF && errno != 0) {
+            fprintf(stderr, "scanf error\n");
+            exit(EXIT_FAILURE);
+        }
+        noecho();
         if(maxmoves < 0 ) maxmoves = 0;
         if(maxmoves != 0)
             (void) sprintf(buffer,"Moves   : %d        ",maxmoves);

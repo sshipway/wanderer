@@ -1,5 +1,6 @@
 /* File monsters.c */
 
+#include <stdlib.h>
 #include "wand_head.h"
 
 typedef struct { int d[2]; } direction;
@@ -31,7 +32,6 @@ extern struct mon_rec start_of_list;
 struct mon_rec *make_monster(x,y)
 int x,y;
 {
-    /* char *malloc(); */
     #define MALLOC (struct mon_rec *)malloc(sizeof(struct mon_rec))
     struct mon_rec *monster;
     if(tail_of_list->next == NULL)
@@ -98,7 +98,6 @@ int move_monsters(mxp, myp, score, howdead, sx, sy, nf, bell, x, y, diamonds)
 {
     int xdirection, ydirection, hd, vd;
     int deadyet = 0;
-    int bx, by, nbx, nby, tmpx,tmpy;
     direction new_disp;
     struct mon_rec *monster,*current;
     char buffer[25];
@@ -151,7 +150,7 @@ int move_monsters(mxp, myp, score, howdead, sx, sy, nf, bell, x, y, diamonds)
 == ' ')||(screen[*myp+ydirection][*mxp] == '@')))
                 *myp+=ydirection;
             else
-                if(((*mxp+xdirection)<ROWLEN)&&(screen[*myp][*mxp+xdirection] == ' ')||(screen[*myp][*mxp+xdirection] == '@'))
+                if((((*mxp+xdirection)<ROWLEN)&&(screen[*myp][*mxp+xdirection] == ' '))||(screen[*myp][*mxp+xdirection] == '@'))
             *mxp+=xdirection;
         }
         if(!debug_disp)
