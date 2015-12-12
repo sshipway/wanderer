@@ -1,6 +1,11 @@
 /* File display.c */
 
+#include "display.h"
 #include "wand_head.h"
+#include "icon.h"
+#include <curses.h>
+#include <stdio.h>
+#include <string.h>
 
 /***********************************
 *        extern variables          *
@@ -9,14 +14,6 @@ extern int debug_disp;
 extern int edit_mode;
 extern char screen_name[61];
 extern char *edit_memory, *memory_end;
-
-
-/****************************************
-*         function declarations         *
-*****************************************/
-void map(char (*row_ptr)[ROWLEN+1]); 
-void display(int cx, int cy, char (*row_ptr)[ROWLEN+1], long score);
-int inform_me(char *s, int qable);
 
 
 /******************************************
@@ -83,7 +80,7 @@ void map(char (*row_ptr)[ROWLEN+1])
 /***********************************************
 *                   display                    *
 ************************************************/
-void display(int cx, int cy, char (*row_ptr)[ROWLEN+1], long score)
+void display(int cx, int cy, char (*row_ptr)[ROWLEN+1])
 {
     int  x,y = 0, x_coord,y_coord;
     char ch;
@@ -170,32 +167,29 @@ void showname()
 /******************************************************************
 *                           redraw_screen                         *
 *******************************************************************/
-void redraw_screen(bell,maxmoves,num,score,nf,diamonds,mx,sx,sy,frow)
-    int *bell,maxmoves,num,nf,diamonds,mx,sx,sy;
-    long score;
-    char (*frow)[ROWLEN+1];
+void redraw_screen(int *bell, int maxmoves, int num, long score, int nf, int diamonds, int mx, int sx, int sy, char (*frow)[ROWLEN+1])
 {
     char buffer[50];
 
     clear();
     move(0,48);
-    (void) addstr("Score\t   Diamonds");
+    addstr("Score\t   Diamonds");
     move(1,48);
-    (void) addstr("\tFound\tTotal");
+    addstr("\tFound\tTotal");
     move(3,48);
-    (void) sprintf(buffer,"%ld\t %d\t %d  ",score,nf,diamonds);
-    (void) addstr(buffer);
+    sprintf(buffer,"%ld\t %d\t %d  ",score,nf,diamonds);
+    addstr(buffer);
     if(! edit_mode) {
         move(6,48);
-        (void) sprintf(buffer,"Current screen %d",num);
-        (void) addstr(buffer);
+        sprintf(buffer,"Current screen %d",num);
+        addstr(buffer);
     }
     if(maxmoves != -1)
-        (void) sprintf(buffer,"Moves remaining = %d   ",maxmoves);
+        sprintf(buffer,"Moves remaining = %d   ",maxmoves);
     else
-        (void) strcpy(buffer,"     Unlimited moves     ");
+        strcpy(buffer,"     Unlimited moves     ");
     move(15,48);
-    (void) addstr(buffer);
+    addstr(buffer);
     move(17,56);
     if( *bell ) addstr("Bell ON ");
     else addstr("Bell OFF");
@@ -212,7 +206,7 @@ void redraw_screen(bell,maxmoves,num,score,nf,diamonds,mx,sx,sy,frow)
     showname();
 
     if(!debug_disp)
-        display(sx,sy,frow,score);
+        display(sx, sy, frow);
     else
         map(frow);
 }

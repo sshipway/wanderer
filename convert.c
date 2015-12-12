@@ -8,7 +8,16 @@
 **************************************************************************/
 
 #include "wand_head.h"
+#include "display.h"
+#include "encrypt.h"
+#include "monsters.h"
+#include "save.h"
 #include <errno.h>
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 /*
     This program converts V2.* save files into V3.* save files.
@@ -51,57 +60,11 @@ struct mon_rec  *last_of_list, *start_of_list, *tail_of_list;
 int o_enc, n_enc;
 int verbose;
 
-/************************************************
-*                function crypt_file            *
-*************************************************/
-crypt_file(name)
-char *name;
-{
-    char buffer[1024];
-    int fd,length,loop;
-
-    if((fd = open(name,O_RDONLY)) == -1)
-    {
-        sprintf(buffer,"Wanderer: cannot open %s",name);
-        perror(buffer);
-        exit(1);
-    } 
-    if((length = read(fd,buffer,1024)) < 1) {
-        sprintf(buffer,"Wanderer: read error on %s",name);
-        perror(buffer);
-        exit(1);
-    }
-    close(fd);
-
-    /* Right, got it in here, now to encrypt the stuff */
-
-    srand(BLURFL);
-    for(loop=0;loop<length;loop++)
-        buffer[loop]^=rand();
-
-    if((fd = open(name,O_WRONLY|O_TRUNC))== -1) {
-        sprintf(buffer,"Wanderer: cannot write to %s",name);
-        perror(buffer);
-        exit(1);
-    }
-    if(write(fd,buffer,length)!=length) {
-        sprintf(buffer,"Wanderer: write error on %s",name);
-        perror(buffer);
-        exit(1);
-    }
-    close(fd);
-
-    /* ok, file now contains encrypted/decrypted game. */
-    /* lets go back home...                            */
-}
-
 /*****************************************************
 *               function make_monster                *
 ******************************************************/
-struct mon_rec *make_monster(x,y)
-int x,y;
+struct mon_rec *make_monster(int x, int y)
 {
-    char *malloc();
 #define MALLOC (struct mon_rec *)malloc(sizeof(struct mon_rec))
     struct mon_rec *monster;
     if(tail_of_list->next == NULL)
@@ -126,7 +89,7 @@ int x,y;
 **************************************************/
 void save_game()
 {
-    char    fname[128], buf[70], *fp;
+    char    fname[128], *fp;
     FILE    *fo;
     struct    saved_game    s;
     extern    char    *getenv();
@@ -175,7 +138,7 @@ void save_game()
     fwrite(screen_name,sizeof(char),strlen(screen_name),fo);
     fclose(fo);
     if( n_enc )
-        crypt_file(outfile,0);   /* encrpyt the saved game */
+        crypt_file(outfile);   /* encrpyt the saved game */
     printf("Game saved.\n\nWanderer Copyright (C) 1988 S Shipway\n\n");
 }
 
@@ -184,17 +147,15 @@ void save_game()
 ********************************************************/
 void restore_game()
 {
-    FILE    *fi;
-    struct    saved_game    s;
-    struct    mon_rec    *mp, *tmp, tmp_monst;
-    char    fname[128], *fp;
-    FILE    *fo;
-    extern    char    *getenv();
+    FILE *fi;
+    struct saved_game s;
+    struct mon_rec *mp, *tmp, tmp_monst;
+    char *fp;
 
     fp = infile;
 
     if( o_enc )
-         crypt_file(infile,1);   /* decrypt it */
+         crypt_file(infile);   /* decrypt it */
     if ((FILE *)NULL == (fi = fopen(infile, R_BIN))) {
         printf("Open error on '%s'\n", fp);
         printf("Cannot restore game --- sorry.\n");
@@ -269,9 +230,7 @@ extern char *optarg;
 /**************************************************************
 *                         main program                        *
 ***************************************************************/
-main(argc,argv)
-int argc;
-char **argv;
+int main(int argc, char **argv)
 {
     char c;
     struct mon_rec mlist;

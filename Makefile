@@ -4,24 +4,31 @@
 # and yet again by adb@bucsf.bu.edu
 # Make clean - Marina Brown marina@surferz.net 2001,2
 
-OBJ = monsters.o m.o save.o jump.o display.o icon.o game.o read.o help.o fall.o scores.o edit.o encrypt.o
+TOOLS = convert passwords
+SRC_TOOLS = $(addsuffix .c,$(TOOLS))
 
-CFLAGS ?= -O -s
-CFLAGS += -std=c99 -Wall -Wextra
+SRCS = $(filter-out $(SRC_TOOLS),$(wildcard *.c))
+OBJS = $(patsubst %.c,%.o,$(SRCS))
+
+CC       ?= cc
+CFLAGS   ?= -O -s
+CFLAGS   += -std=c99 -Wall -Wextra
 CPPFLAGS += -D_POSIX_C_SOURCE=199309L
-LIBS = -lncurses 
-CC ?= cc
+LDLIBS   += -lncurses 
 
-all:	wanderer
-	@echo DONE
+all: wanderer
+.PHONY: all
 
-wanderer:	$(OBJ)
-	$(CC) $(CFLAGS) -o wanderer $(OBJ) $(LIBS)
+wanderer: $(OBJS)
 
-convert: convert.c wand_head.h
-	$(CC) $(CFLAGS) -o convert convert.c
+convert: CPPFLAGS += -D__CONVERT
+convert: convert.c encrypt.c encrypt.h
+	$(CC) $(CFLAGS) $(CPPFLAGS) $< encrypt.c -o $@
 
-$(OBJ): wand_head.h
+passwords: passwords.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+%.o: %.c %.h wand_head.h
 
 install: 
 	mkdir /usr/local/share/wanderer
@@ -35,16 +42,20 @@ install:
 	chmod +x /usr/local/bin/wanderer
 	chmod g+s /usr/local/bin/wanderer
 	cp wanderer.6 /usr/share/man/man6
+.PHONY: install
 
 clean:
-	rm *.o
+	$(RM) $(OBJS)
+.PHONY: clean
 
 distclean:
-	rm *.o
-	rm wanderer
-	rm convert
+	$(RM) $(OBJS)
+	$(RM) wanderer
+	$(RM) $(TOOLS)
+.PHONY: distclean
 
 uninstall:
-	rm /usr/local/bin/wanderer
-	rm -rf /usr/local/share/wanderer/
-	rm -f /usr/share/man/man6/wanderer.6
+	$(RM)    /usr/local/bin/wanderer
+	$(RM) -r /usr/local/share/wanderer/
+	$(RM)    /usr/share/man/man6/wanderer.6
+.PHONY: uninstall

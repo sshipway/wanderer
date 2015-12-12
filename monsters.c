@@ -1,17 +1,18 @@
 /* File monsters.c */
 
-#include <stdlib.h>
+#include "monsters.h"
 #include "wand_head.h"
+#include "display.h"
+#include "edit.h"
+#include "fall.h"
+#include "icon.h"
+#include <curses.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct { int d[2]; } direction;
 
-#ifdef        LINT_ARGS        /* M001 */
-direction new_direction(int, int, int, int);
-#else
-direction new_direction();
-#endif
-
-extern void draw_symbol();
 extern int debug_disp;
 extern int edit_mode;
 extern char screen[NOOFROWS][ROWLEN+1];
@@ -29,8 +30,7 @@ extern struct mon_rec start_of_list;
 /********************************************************
 *                 function make_monster                 *
 *********************************************************/
-struct mon_rec *make_monster(x,y)
-int x,y;
+struct mon_rec *make_monster(int x, int y)
 {
     #define MALLOC (struct mon_rec *)malloc(sizeof(struct mon_rec))
     struct mon_rec *monster;
@@ -56,8 +56,7 @@ int x,y;
 *********************************************************************/
 /* 'follow lefthand wall' algorithm for baby monsters */
 
-direction new_direction(x,y,bx,by)
-                        int x,y,bx,by;
+direction new_direction(int x, int y, int bx, int by)
 {
     direction out;
     if(viable((x+by),(y-bx)))
@@ -92,9 +91,7 @@ direction new_direction(x,y,bx,by)
 /***********************************************************
 *                   function move_monsters                 *
 ************************************************************/
-int move_monsters(mxp, myp, score, howdead, sx, sy, nf, bell, x, y, diamonds)
-                  int *mxp, *myp, *score, sx, sy, nf, bell, x, y, diamonds;
-                  char *howdead;
+int move_monsters(int *mxp, int *myp, long *score, char *howdead, int sx, int sy, int nf, int bell, int x, int y, int diamonds)
 {
     int xdirection, ydirection, hd, vd;
     int deadyet = 0;
@@ -108,8 +105,8 @@ int move_monsters(mxp, myp, score, howdead, sx, sy, nf, bell, x, y, diamonds)
         *score+=100;
         *mxp = *myp = -1;
         move(3,48);
-        sprintf(buffer,"%d\t %d\t",*score,nf);
-        (void) addstr(buffer);
+        sprintf(buffer, "%ld\t %d\t", *score,nf);
+        addstr(buffer);
         draw_symbol(50,11,' ');
         move(12,56); addstr("              ");
         move(13,56); addstr("              ");
@@ -230,8 +227,8 @@ int move_monsters(mxp, myp, score, howdead, sx, sy, nf, bell, x, y, diamonds)
 #endif
             *score +=20;
             move(3,48);
-            sprintf(buffer,"%d\t %d\t %d ",*score,nf,diamonds);
-            (void) addstr(buffer);
+            sprintf(buffer, "%ld\t %d\t %d ", *score, nf, diamonds);
+            addstr(buffer);
         /* remove from chain, and insert at the end (at last_of_list) */
             if(monster == tail_of_list)
                 tail_of_list = tail_of_list->prev;

@@ -1,9 +1,12 @@
 /* File fall.c */
 
+#include "fall.h"
 #include "wand_head.h"
+#include "display.h"
+#include "icon.h"
+#include <curses.h>
+#include <string.h>
 
-int bang(int x, int y, int *mx, int *my, int sx, int sy, char *howdead);
-extern void draw_symbol();
 extern int debug_disp;
 extern char screen[NOOFROWS][ROWLEN+1];
 
@@ -16,9 +19,7 @@ int moving = 0; /* so that bombs explode only if something *hits* them */
 *  vector dx,dy. All the others are constant and should really have   *
 *  been global...                                                     */
 
-int check(mx,my,x,y,dx,dy,sx,sy,howdead)
-    int x,y,sx,sy,dx,dy, *mx, *my;
-    char howdead[25];
+int check(int *mx, int *my, int x, int y, int dx, int dy, int sx, int sy, char howdead[25])
 {
     int ret=0;
     ret+=fall(mx,my,x,y,sx,sy,howdead);
@@ -36,9 +37,7 @@ int check(mx,my,x,y,dx,dy,sx,sy,howdead)
 /* recursive function for falling *
 *  boulders and arrows            *
 ***********************************/
-int fall(mx,my,x,y,sx,sy,howdead)  
-    int  x,y,sx,sy, *mx, *my;
-    char howdead[25];
+int fall(int *mx, int *my, int x, int y, int sx, int sy, char howdead[25])
 {
 int nx = x,nxu = x,nyl = y,nyr = y,ny = y,retval = 0;
 if ((y>(NOOFROWS-1))||(y<0)||(x<0)||(x>(ROWLEN-1)))
@@ -352,9 +351,7 @@ return(0);
 /**********************************************
 *                function bang                *
 ***********************************************/
-int bang(x,y,mx,my,sx,sy,howdead) /* explosion centre x,y */
-    int x,y,sx,sy,*mx,*my;
-    char *howdead;
+int bang(int x, int y, int *mx, int *my, int sx, int sy, char *howdead) /* explosion centre x,y */
 {
     int retval = 0;
     int ba,bb;  /* abbrevs for 'bang index a' and 'bang index b' :-) */

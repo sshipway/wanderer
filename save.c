@@ -1,21 +1,26 @@
 /* File save.c */
 
-#include <errno.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "save.h"
 #include "wand_head.h"
+#include "display.h"
+#include "edit.h"
+#include "encrypt.h"
+#include "monsters.h"
+#include <curses.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 extern char screen[NOOFROWS][ROWLEN+1];
 extern int saved_game;
 extern char screen_name[ROWLEN+1];
-extern void crypt_file();
-extern int inform_me();
-extern void readstring();
 
 struct saved_game
 {
     short num;
-    long  score;
+    long score;
     short bell;
     short maxmoves;
     short num_monsters;
@@ -28,14 +33,11 @@ extern struct mon_rec start_of_list, *tail_of_list;
 /*********************************************************
 *                    function save_game                  *
 **********************************************************/
-void save_game(num, score, bell, maxmoves)
-    int        num, *bell, maxmoves;
-    long *score;
+void save_game(int num, long *score, int *bell, int maxmoves)
 {
         char   fname[128], buf[70], *fp;
         FILE   *fo;
         struct saved_game  s;
-        extern char        *getenv();
         struct mon_rec     *mp;
 
         if ((char *)NULL == (fp = getenv("SAVENAME")))
@@ -88,7 +90,7 @@ void save_game(num, score, bell, maxmoves)
             if(1 != fwrite((char *)mp, sizeof(struct mon_rec), 1, fo))
             {
                 sprintf(buf,"Write error on '%s'\n", fname);
-                inform_me(buf);
+                inform_me(buf, 0);
                 fclose(fo);
                 unlink(fname);
                 return;
@@ -97,7 +99,7 @@ void save_game(num, score, bell, maxmoves)
         fwrite(screen_name,sizeof(char),strlen(screen_name),fo);
         fclose(fo);
 #ifndef NO_ENCRYPTION
-        crypt_file(fp,0);   /* encrpyt the saved game */
+        crypt_file(fp);   /* encrpyt the saved game */
 #endif
         clear();
         CBON;
@@ -111,14 +113,12 @@ void save_game(num, score, bell, maxmoves)
 /*************************************************
 *              function restore_game             *
 **************************************************/
-void restore_game(num, score, bell, maxmoves)
-    int *num, *score, *bell, *maxmoves;
+void restore_game(int *num, long *score, int *bell, int *maxmoves)
 {
     FILE        *fi;
     struct        saved_game        s;
     struct        mon_rec        *mp, *tmp, tmp_monst;
     char        fname[128], *fp;
-    extern        char        *getenv();
 
     if ((char *)NULL == (fp = getenv("SAVENAME")))
     {
@@ -131,7 +131,7 @@ void restore_game(num, score, bell, maxmoves)
     clear();
     refresh();
 #ifndef NO_ENCRYPTION
-     crypt_file(fp,1);   /* decrypt it */
+     crypt_file(fp);   /* decrypt it */
 #endif
     if ((FILE *)NULL == (fi = fopen(fp, R_BIN)))
     {

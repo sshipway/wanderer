@@ -1,23 +1,21 @@
-/* File m.c */
+/* File wanderer.c */
 
-#include <sys/time.h>
-#include <getopt.h>
-#include <stdlib.h>
-#include <term.h>
-#include <unistd.h>
 #include "wand_head.h"
+#include "display.h"
+#include "edit.h"
+#include "game.h"
+#include "read.h"
+#include "scores.h"
+#include <curses.h>
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 #define SCROLLING 0
 #define PAGED 1
-
-/**********************************
-*      function declarations      *
-***********************************/
-extern char *playscreen();
-extern int rscreen();
-extern int savescore();
-extern void map();
-extern void check_legality();
 
 /***********************************
 *         Global Variables         *
@@ -28,9 +26,9 @@ int maxscreens;
 char screen[NOOFROWS][ROWLEN+1];
 int edit_mode = 0;
 int saved_game = 0;
-char *edit_screen = (char *) 0;
-char *edit_memory = (char *) 0;
-char *memory_end = (char *) 0;
+char *edit_screen = NULL;
+char *edit_memory = NULL;
+char *memory_end = NULL;
 char screen_name[61] ;
 int record_file = -1;
 
@@ -78,7 +76,7 @@ struct timeval tv;
         initscr();
         CBON;
         noecho();
-        maxlines = tgetnum("li") - 3;
+        maxlines = getmaxy(stdscr) - 3;
     }
     linecount = 0;
     tv.tv_sec = 0;
@@ -192,7 +190,7 @@ char (*frow)[ROWLEN+1] = screen;
 long score = 0;
 int fp;
 int num = 1;
-int _bell = 0;
+int bell = 0;
 int maxmoves = 0;
 int x;
 int y;
@@ -207,8 +205,8 @@ while(( c = getopt(argc,argv,"01k:et:r:fmCcvsi")) != -1 )
 {
     switch(c) 
     {
-        case '0': _bell = 0; break;
-        case '1': _bell = 1; break;
+        case '0': bell = 0; break;
+        case '1': bell = 1; break;
         case 'k': keys = optarg; break;
         case 'i': 
                 printf("\nWANDERER Copyright (C) 1988 S Shipway. Version %s.\n\n",VERSION);
@@ -286,7 +284,7 @@ if(!edit_mode) {
                 strcpy(howdead,"a non-existant screen");
                 break;
                 }
-            dead = playscreen(&num,&score,&_bell,maxmoves,keys);
+            dead = playscreen(&num,&score,&bell,maxmoves,keys);
             if ((dead != NULL) && (*dead == '~')) 
             {
                 num = (int)(dead[1]) - 1;
@@ -307,7 +305,7 @@ else
             for(y=0;y<NOOFROWS;y++)
                 screen[y][x] =  ' ';
         }
-    editscreen(num,&score,&_bell,maxmoves,keys);
+    editscreen(num,&score,&bell,maxmoves,keys);
     }
 /* END OF MAIN PROGRAM */
 

@@ -1,9 +1,12 @@
 /* File jump.c */
 
+#include "jump.h"
+#include "wand_head.h"
+#include <curses.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
-#include "wand_head.h"
 
 extern int debug_disp;
 extern int no_passwords;
@@ -13,9 +16,7 @@ extern int maxscreens;
 *                   function scrn_passwd                    *
 *              reads password num into passwd               *
 *************************************************************/
-int scrn_passwd(num, passwd)    /* reads password num into passwd */
-int num;
-char *passwd;
+int scrn_passwd(int num, char *passwd)    /* reads password num into passwd */
 {
         long position;
         FILE *fp;
@@ -39,8 +40,7 @@ char *passwd;
 /*******************************************************
 *                   function showpass                  *
 ********************************************************/
-void showpass(num)
-     int num;
+void showpass(int num)
 {
     char correct[20];
     char buffer[100];
@@ -52,7 +52,7 @@ void showpass(num)
         move(20,0);
     if(!scrn_passwd(num,correct))
         return;
-    (void) sprintf(buffer,"The password to jump to level %d ( using ~ ) is : %s        \n",(num+1),correct);
+    sprintf(buffer,"The password to jump to level %d ( using ~ ) is : %s        \n",(num+1),correct);
     addstr(buffer);
     addstr("PRESS ANY KEY TO REMOVE IT AND CONTINUE                          \n");
     refresh();
@@ -73,8 +73,7 @@ void showpass(num)
 /**********************************************************
 *                    function jumpscreen                  *
 ***********************************************************/
-int jumpscreen(num)
-    int num;
+int jumpscreen(int num)
 {
     char word[20],
          buffer[100],

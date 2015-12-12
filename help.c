@@ -2,6 +2,7 @@
 /* From jason@uucp.aeras */
 
 #include "wand_head.h"
+#include <curses.h>
 
 char *help[]={
 "      **  W A N D E R E R  **      ", /* 0 */
@@ -228,9 +229,8 @@ NULL };
 /**********************************************
 *               function helpme               *
 ***********************************************/
-void
-helpme(htype)   /* routine to show help menu. */
-int htype;      /* 0 == editor                */
+void helpme(int htype)   /* routine to show help menu. */
+                         /* htype 0 == editor          */
 {
          int i = 0, i2 = 0;   /* loop counters      */
          char *ptr;           /* pointer in array.. */
