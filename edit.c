@@ -1,14 +1,17 @@
 /* File edit.c */
 
+#include "wand_head.h"
+#include "display.h"
+#include "game.h"
+#include "help.h"
+#include "read.h"
+#include <curses.h>
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <strings.h>
 #include <unistd.h>
-#include "wand_head.h"
-
-extern char *playscreen();
-extern void helpme();
-extern int inform_me();
 
 extern int debug_disp;
 extern char *edit_screen;
@@ -131,9 +134,7 @@ refresh();
 /**************************************************************
 *                          readstring                         *
 ***************************************************************/
-void readstring(str,size)
-    char *str;
-    int size;
+void readstring(char *str, int size)
 {
   int count = 0;
   char ch;
@@ -206,8 +207,7 @@ clearbottom();
 *          screen_save          *
 *  save and restore screen data *
 *********************************/
-void screen_save(maxmoves)
-int maxmoves;
+void screen_save(int maxmoves)
 {
 char file[90];
 char *oldname;
@@ -230,7 +230,7 @@ if( file[0] ) edit_screen = file;
 for(y = 0; y<NOOFROWS;y++)        /* make sure screen written */
     if(screen[y][ROWLEN-1] == ' ') /* correctly...             */
         screen[y][ROWLEN-1] = '-';
-wscreen(0,maxmoves);
+wscreen(maxmoves);
 for(y = 0; y<NOOFROWS;y++)
     if(screen[y][ROWLEN-1] == '-')
         screen[y][ROWLEN-1] = ' ';
@@ -240,8 +240,7 @@ edit_screen = oldname;
 /*********************************************
 *                 screen_read                *
 **********************************************/
-void screen_read(maxmoves)
-    int *maxmoves;
+void screen_read(int *maxmoves)
 {
     static char file[90];
     int y;
@@ -320,10 +319,7 @@ instruct();
 *       editscreen       *
 *  Actual edit function  *
 **************************/
-void editscreen(num,score,bell,maxmoves,keys)
-    int num;
-    int maxmoves, *bell, *score;
-    char keys[10];
+void editscreen(int num, long *score, int *bell, int maxmoves, char keys[10])
 {
     int  mmbkup,x,y,sx=0,sy=0,quit=0,nx,ny,nosave =0;
     char (*frow)[ROWLEN+1] = screen,
@@ -351,9 +347,9 @@ void editscreen(num,score,bell,maxmoves,keys)
     x=sx;
     y=sy;
     if(maxmoves != 0)
-        (void) sprintf(buffer,"Moves   : %d        ",maxmoves);
+        sprintf(buffer,"Moves   : %d        ",maxmoves);
     else
-        (void) strcpy(buffer,"Moves   : Unlimited");
+        strcpy(buffer,"Moves   : Unlimited");
     debug_disp=1;
     map(frow);
     move(18,0);
@@ -428,9 +424,9 @@ while(!quit)
         noecho();
         if(maxmoves < 0 ) maxmoves = 0;
         if(maxmoves != 0)
-            (void) sprintf(buffer,"Moves   : %d        ",maxmoves);
+            sprintf(buffer,"Moves   : %d        ",maxmoves);
         else
-            (void) strcpy(buffer,"Moves   : Unlimited ");
+            strcpy(buffer,"Moves   : Unlimited ");
         instruct();
         move(18,0);
         addstr(buffer);
@@ -478,9 +474,9 @@ while(!quit)
             debug_disp = 1;
             map(frow);
             if(maxmoves != 0)
-                (void) sprintf(buffer,"Moves   : %d        \n",maxmoves);
+                sprintf(buffer,"Moves   : %d        \n",maxmoves);
             else
-                (void) strcpy(buffer,"Moves   : Unlimited\n");
+                strcpy(buffer,"Moves   : Unlimited\n");
             move(18,0);
             addstr(buffer);
             addstr("Name    : ");
@@ -506,9 +502,9 @@ while(!quit)
         clear();
         map(frow);
         if(maxmoves != 0)
-                (void) sprintf(buffer,"Moves   : %d        \n",maxmoves);
+                sprintf(buffer,"Moves   : %d        \n",maxmoves);
         else
-            (void) strcpy(buffer,"Moves   : Unlimited\n");
+            strcpy(buffer,"Moves   : Unlimited\n");
         move(18,0);
         addstr(buffer);
         addstr("Name    : ");
@@ -523,9 +519,9 @@ while(!quit)
     else if(ch == '?' ) {
         helpme(0);
         if(maxmoves != 0)
-            (void) sprintf(buffer,"Moves   : %d        \n",maxmoves);
+            sprintf(buffer,"Moves   : %d        \n",maxmoves);
         else
-                (void) strcpy(buffer,"Moves   : Unlimited\n");
+                strcpy(buffer,"Moves   : Unlimited\n");
         map(frow);
     }
     else if((ch == 127)||(ch == 8)) {  /* delete key */
@@ -579,6 +575,6 @@ while(!quit)
                                             /* so this should stop them! */
             if(screen[y][ROWLEN-1] == ' ')
                 screen[y][ROWLEN-1] = '-';
-        wscreen(num,maxmoves);
+        wscreen(maxmoves);
         }
 }

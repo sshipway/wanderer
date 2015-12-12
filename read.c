@@ -1,10 +1,13 @@
 /* File read.c */
 
-#include <sys/types.h>
-#include <err.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include "wand_head.h"
+#include "display.h"
+#include <err.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 extern int inform_me();
 
@@ -19,8 +22,7 @@ char buffer[80];
 /****************************************************************************
 *                                   rscreen                                 *
 *****************************************************************************/
-int rscreen(num,maxmoves)
-int *maxmoves, num;
+int rscreen(int num, int *maxmoves)
 {
     int  y,numr;
     FILE *fp;
@@ -72,8 +74,7 @@ int *maxmoves, num;
 /*********************************************************************
 *                              wscreen                               *
 **********************************************************************/
-int wscreen(num,maxmoves)
-    int maxmoves, num;
+int wscreen(int maxmoves)
 {
     int  y,x;
     FILE *fp;

@@ -1,11 +1,13 @@
 /* file scores.c */
 
+#include "wand_head.h"
 #include <err.h>
 #include <errno.h>
-#include <sys/stat.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
-#include "wand_head.h"
+#include <sys/stat.h>
 
 #ifdef  MSDOS        /* M001 */
 
@@ -43,7 +45,7 @@ typedef struct
 {
     char howdead[25];
     char name[20];
-    int  score;
+    long score;
     int  level;
     int  uid;
 } score_entry;
@@ -69,7 +71,7 @@ void show_scores(score_entry *table,int num)
     while(num > 0)
     {
         num--;
-        printf("%2d %5d %3d      %-20s     killed by %-s\n",(tot - num),table->score,table->level,table->name,table->howdead);
+        printf("%2d %5ld %3d      %-20s     killed by %-s\n", (tot - num), table->score, table->level, table->name, table->howdead);
         table++;
     }
     printf("\n\n");
@@ -101,7 +103,7 @@ int readtable(score_entry *table_ptr)
 *     savescore     *
 *********************/
 
-int  savescore(char *howdead,int score,int level,char *name)
+int savescore(char *howdead, long score, int level, char *name)
 {
     score_entry table[ENTRIES + 2],
                 *table_ptr = table,

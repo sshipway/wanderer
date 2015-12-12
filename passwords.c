@@ -1,6 +1,10 @@
 /* passwords.c */
 
 #include "wand_head.h"
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define PASS "poppycrash"
 
@@ -8,9 +12,7 @@
 *                      scrn_passwd                 *
 *            reads password num into passwd        *
 ****************************************************/
-int scrn_passwd(num, passwd)
-    int num;
-    char *passwd;
+int scrn_passwd(int num, char *passwd)
 {
         long position;
         FILE *fp;
@@ -26,7 +28,10 @@ int scrn_passwd(num, passwd)
                 return 0;
         fseek(fp,position,ftell(fp));
         while(fgetc(fp) != '\n');
-        fscanf(fp,"%s\n",passwd);
+        if (fscanf(fp,"%s\n",passwd) == EOF && errno != 0) {
+            fprintf(stderr, "fscanf error\n");
+            exit(EXIT_FAILURE);
+        }
         /* read a word into passwd */
         fclose(fp);
         return (1);
@@ -35,9 +40,7 @@ int scrn_passwd(num, passwd)
 /************************************************
 *                    main                       *
 *************************************************/
-main(argc,argv)
-int argc;
-char *argv[];
+int main(int argc, char **argv)
 {
         int scr,position,mpw = 0;
         char pass[20];
@@ -56,7 +59,10 @@ char *argv[];
                 if((scr < 100) && (mpw == 0)) {
                         printf("You need clearance to see passwords below 100.\n");
                         printf("Enter master password:");
-                        scanf("%s",pw);
+                        if (scanf("%s", pw) == EOF && errno != 0) {
+                            fprintf(stderr, "scanf error\n");
+                            exit(EXIT_FAILURE);
+                        }
                         if(strncmp(pw,PASS,strlen(PASS))) {
                                 printf("Foo, charlatan!\n");
                                 exit(-1);

@@ -1,14 +1,14 @@
 /* file icon.c */
 
 #include "wand_head.h"
+#include <curses.h>
+#include <string.h>
 
 /********************************************************
 *                     draw_symbol                       *
 *********************************************************/
-void draw_symbol(x,y,ch)      /* this is where the pretty graphics are   */
-                              /* all defined - change them if you want.. */
-int  x,y;
-char ch;
+void draw_symbol(int x, int y, char ch)     /* this is where the pretty graphics are   */
+                                            /* all defined - change them if you want.. */
 {
     char icon[2][4],
          (*iconrow)[4] = icon;

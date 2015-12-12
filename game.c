@@ -1,25 +1,18 @@
 /* File game.c */
 
-#include <stdlib.h>
-#include <unistd.h>
 #include "wand_head.h"
-
-extern int move_monsters();
-extern void showname();
-extern int jumpscreen();
-extern int check();
-extern void showpass();
-extern void draw_symbol();
-extern void display();
-extern int fall();
-extern void map();
-extern void redraw_screen();
-extern struct mon_rec *make_monster();
-
-/***************************************************************
-*         function declarations    from this file              *
-****************************************************************/
-char *playscreen(int *num, long *score, int *bell, int maxmoves,char keys[10]);
+#include "display.h"
+#include "fall.h"
+#include "help.h"
+#include "icon.h"
+#include "jump.h"
+#include "monsters.h"
+#include "save.h"
+#include <curses.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 extern int debug_disp;
 extern int edit_mode;
@@ -174,7 +167,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
         {
             move(17,56);
             *bell = 1;
-            (void) addstr("Bell ON ");
+            addstr("Bell ON ");
             move(16,0);
             refresh();
             continue;
@@ -183,7 +176,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
         {
             *bell = 0;
             move(17,56);
-            (void) addstr("Bell OFF");
+            addstr("Bell OFF");
             move(16,0);
             refresh();
             continue;
@@ -209,7 +202,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
             if(debug_disp)
                 continue;
             map(frow);
-            display(sx,sy,frow,*score);
+            display(sx, sy, frow);
             continue;
         }
         if(ch == 'q')
@@ -223,14 +216,14 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
             if(debug_disp)
                 map(frow);
             else
-                display(sx,sy,frow,*score);
+                display(sx, sy, frow);
             continue;
         }
         if((ch == '@')&&(!debug_disp))
         {
             sx = x;
             sy = y;
-            display(sx,sy,frow,*score);
+            display(sx, sy, frow);
             continue;
         }
         if(ch == '#')
@@ -247,7 +240,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                                         addch(' ');
                      }
                     sx = x; sy = y;
-                    display(sx,sy,frow,*score);
+                    display(sx, sy, frow);
             }
             continue;
         }
@@ -345,14 +338,14 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                 zz.z_diamonds        = diamonds;
                 zz.z_nf                = nf;
         
-                save_game(*num, score, bell, maxmoves, &start_of_list,tail_of_list);
+                save_game(*num, score, bell, maxmoves);
                 /* NOTREACHED ... unless there's been an error. */
         }
         if(ch == 'R')            /* restore game */
         {
                 extern        struct        save_vars        zz;
         
-                restore_game(num,score,bell,&maxmoves,&start_of_list,&tail_of_list);
+                restore_game(num, score, bell, &maxmoves);
         
                 /* recover important local variables */
                 x                = zz.z_x;
@@ -387,7 +380,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
             case ':': *score+=1;
                 move(3,48);
                 sprintf(buffer,"%ld\t %d",*score,nf);
-                (void) addstr(buffer);
+                addstr(buffer);
             case ' ':
                 screen[y][x] = ' ';
                    screen[ny][nx] = '@';
@@ -418,7 +411,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     *score+=100;
                     move(3,48);
                     sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
-                    (void) addstr(buffer);
+                    addstr(buffer);
                     draw_symbol(50,11,' ');
                     move(12,56); addstr("              ");
                         move(13,56); addstr("              ");
@@ -501,7 +494,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     *score+=100;
                     move(3,48);
                     sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
-                    (void) addstr(buffer);
+                    addstr(buffer);
                     draw_symbol(50,11,' ');
                        move(12,56); addstr("              ");
                       move(13,56); addstr("              ");
@@ -549,7 +542,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     *score+=100;
                     move(3,48);
                     sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
-                    (void) addstr(buffer);
+                    addstr(buffer);
                     draw_symbol(50,11,' ');
                        move(12,56); addstr("              ");
                       move(13,56); addstr("              ");
@@ -623,9 +616,9 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                     *score += 20;
                     move(3,48);
                     sprintf(buffer,"%ld\t %d\t %d ",*score,nf,diamonds);
-                    (void) addstr(buffer);
+                    addstr(buffer);
                     if(!debug_disp)
-                        display(sx,sy,frow,*score);
+                        display(sx, sy, frow);
                     else
                         map(frow);
                     deadyet += fall(&mx,&my,nx,ny,sx,sy,howdead);
@@ -679,9 +672,9 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
         }
         if((y == ny) && (x == nx) && (maxmoves>0))
         {
-            (void) sprintf(buffer,"Moves remaining = %d ",--maxmoves);
+            sprintf(buffer,"Moves remaining = %d ",--maxmoves);
             move(15,48);
-            (void) addstr(buffer);
+            addstr(buffer);
         }
         if(maxmoves == 0)
         {
@@ -696,28 +689,28 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                 sx-=6;
                 if(sx < 4)
                     sx = 4;
-                display(sx,sy,frow,*score);
+                display(sx, sy, frow);
             }
             if ((y<(sy-2))&& (deadyet == 0))
             {
                 sy-=5;
                 if(sy < 2)
                     sy = 2;
-                display(sx,sy,frow,*score);
+                display(sx, sy, frow);
             }
             if ((x>(sx+3)) && (!deadyet))
             {
                 sx+=6;
                 if(sx>(ROWLEN -5))
                     sx = ROWLEN -5;
-                display(sx,sy,frow,*score);
+                display(sx, sy, frow);
             }
             if ((y>(sy+2))&& (!deadyet))
             {
                 sy+=5;
                 if(sy > (NOOFROWS-3))
                     sy = NOOFROWS -3;
-                display(sx,sy,frow,*score);
+                display(sx, sy, frow);
             }
         }
         
