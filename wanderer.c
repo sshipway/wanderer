@@ -22,7 +22,7 @@
 ************************************/
 int debug_disp = 0;
 int no_passwords = 0;
-int maxscreens;
+int maxscreens = 0;
 char screen[NOOFROWS][ROWLEN+1];
 int edit_mode = 0;
 int saved_game = 0;
