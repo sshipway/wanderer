@@ -125,13 +125,8 @@ void restore_game(num, score, bell, maxmoves)
         move((LINES-1),0);
         addstr("Restore Filename ? ");
         refresh();
-        echo(); CBOFF;
+        readstring(fname,127);
         fp = fname;
-        if (fgets(fp,sizeof(fname),stdin) == NULL) { /* Marina Brown */
-            fprintf(stderr, "fgets error\n");
-            exit(EXIT_FAILURE);
-        }
-        CBON; noecho();
     }
     clear();
     refresh();
