@@ -11,8 +11,12 @@
                 /********** FILES ************/
 
 /* Change these to the necessary directories or files */
+#ifndef SCREENPATH
 #define SCREENPATH  "/usr/local/share/wanderer/screens"
+#endif
+#ifndef HISCOREPATH
 #define HISCOREPATH "/usr/local/share/wanderer/hiscore"
+#endif
 #define DICTIONARY  "/usr/share/dict/words"
 #define LOCKFILE    "/tmp/wanderer.lock"
 
