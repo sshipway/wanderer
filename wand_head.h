@@ -1,6 +1,6 @@
 /* file wand_head.h */
 
-#undef MSDOS /* Marina */
+#undef MSDOS                    /* Marina */
 
 #ifndef MSDOS
 #include <sys/file.h>
@@ -34,13 +34,13 @@
 /* #define NO_RESTORED_GAME_HISCORES  */
 /* #define COMPARE_BY_NAME  // define this to compare by name, not uid         */
 /* #define NO_ENCRYPTION // define this to disable the savefile encryptor */
-#define NOISY    /* do we want bells in the game ? */
+#define NOISY                   /* do we want bells in the game ? */
 
                 /****** OTHER PARAMETERS ******/
 
-#define GUESTUID 0    /* guestuid always compared by name         */
-#define EMSIZE 1024   /* size of editor moves memory              */
-#define ENTRIES 15    /* size of hiscore file                     */
+#define GUESTUID 0              /* guestuid always compared by name         */
+#define EMSIZE 1024             /* size of editor moves memory              */
+#define ENTRIES 15              /* size of hiscore file                     */
 
             /**** NOTHING TO CHANGE BELOW HERE ****/
 
@@ -48,15 +48,15 @@
 #ifdef        MSDOS
 #define        R_BIN        "rb"        /* binary mode for non-text files */
 #define        W_BIN        "wb"
-# ifdef        VOIDPTR
-#  define VOIDSTAR        (void *)
-# else
-#  define VOIDSTAR        (char *)
-# endif
-#define        ASKNAME                /* ask user's name if not in environment         */
-#define        COMPARE_BY_NAME        /* compare users with name, not uid                */
-#undef        getchar                /* remove stdio's definition to use curses'         */
-#define        getchar()        getch()        /* use curse's definition instead */
+#ifdef        VOIDPTR
+#define VOIDSTAR        (void *)
+#else
+#define VOIDSTAR        (char *)
+#endif
+#define        ASKNAME          /* ask user's name if not in environment         */
+#define        COMPARE_BY_NAME  /* compare users with name, not uid                */
+#undef        getchar           /* remove stdio's definition to use curses'         */
+#define        getchar()        getch() /* use curse's definition instead */
 
 #else /* not MSDOS */
 #define        R_BIN        "r"

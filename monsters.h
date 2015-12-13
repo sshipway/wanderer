@@ -10,13 +10,15 @@
 
 struct mon_rec
 {
-    int x,y,mx,my;
+    int x, y, mx, my;
     char under;
-    struct mon_rec *next,*prev;
+    struct mon_rec *next, *prev;
 };
 
 struct mon_rec *make_monster(int x, int y);
 
-int move_monsters(int *mxp, int *myp, long *score, char *howdead, int sx, int sy, int nf, int bell, int x, int y, int diamonds);
+int move_monsters(int *mxp, int *myp, long *score, char *howdead,
+                  int sx, int sy, int nf, int bell, int x, int y,
+                  int diamonds);
 
 #endif // __MONSTERS_H
