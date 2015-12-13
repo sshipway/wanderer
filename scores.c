@@ -236,7 +236,10 @@ int savescore(char *howdead, long score, int level, char *name)
         fclose(fp);
     }
     else
+    {
+        UNLOCK;
         err(1, "%s", "Error in savescore - fopen HISCOREPATH failed\n");
+    }
 
     UNLOCK;
     return output_value;
