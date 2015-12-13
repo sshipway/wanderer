@@ -14,6 +14,7 @@ extern int inform_me();
 extern int edit_mode;
 extern char *edit_screen;
 extern char screen[NOOFROWS][ROWLEN + 1];
+extern char *screenpath;
 
 extern char screen_name[61];
 
@@ -29,7 +30,7 @@ int rscreen(int num, int *maxmoves)
     char name[100];
     char (*row_ptr)[ROWLEN + 1] = screen;
     if (!edit_mode)
-        sprintf(name, "%s/screen.%d", SCREENPATH, num);
+        sprintf(name, "%s/screen.%d", screenpath, num);
     else
     {
         if (!edit_screen)

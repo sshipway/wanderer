@@ -31,6 +31,7 @@ char *edit_memory = NULL;
 char *memory_end = NULL;
 char screen_name[61];
 int record_file = -1;
+char *screenpath = NULL;
 
 /**/
 /***********************************
@@ -214,6 +215,18 @@ int main(int argc, char **argv)
     char *dead;
     char c;
 
+    // if found screens in current directory, then use it;
+    // otherwise, use SCREENPATH
+    screenpath = strdup("./screens");
+    sprintf(buffer, "%s/screen.1", screenpath);
+    if ((fp = open(buffer, O_RDONLY)) == -1)
+    {
+        free(screenpath);
+        screenpath = strdup(SCREENPATH);
+    }
+    else
+        close(fp);
+
     while ((c = getopt(argc, argv, "01k:et:r:fmCcvsi")) != -1)
     {
         switch (c)
@@ -230,7 +243,7 @@ int main(int argc, char **argv)
         case 'i':
             printf("\nWANDERER Copyright (C) 1988 S Shipway. Version %s.\n\n",
                    VERSION);
-            printf("Screens in %s.\n", SCREENPATH);
+            printf("Screens in %s.\n", screenpath);
             printf("Hiscore File %s.\n", HISCOREPATH);
             printf("Looking for Dictionary in %s.\n", DICTIONARY);
             printf("Lockfile for Scorefile %s.\n", LOCKFILE);
@@ -289,18 +302,18 @@ int main(int argc, char **argv)
     if (optind < argc)
         edit_screen = argv[optind];
 
-/* check for passwords - if file no_pws is in screen dir no pws! */
-    sprintf(buffer, "%s/no_pws", SCREENPATH);
+    /* check for passwords - if file no_pws is in screen dir no pws! */
+    sprintf(buffer, "%s/no_pws", screenpath);
     if ((fp = open(buffer, O_RDONLY)) != -1)
     {
         close(fp);
         no_passwords = 1;
     }
 
-/* count available screens */
+    /* count available screens */
     for (maxscreens = 0;; maxscreens++)
     {
-        sprintf(buffer, "%s/screen.%d", SCREENPATH, (maxscreens + 1));
+        sprintf(buffer, "%s/screen.%d", screenpath, (maxscreens + 1));
         if ((fp = open(buffer, O_RDONLY)) == -1)
             break;
         close(fp);
@@ -373,4 +386,5 @@ int main(int argc, char **argv)
     }
     if (record_file != -1)      /* Wouldn't it be better !to leave file open? */
         close(record_file);
+    free(screenpath);
 }

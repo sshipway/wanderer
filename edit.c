@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <unistd.h>
 
 extern int debug_disp;
@@ -558,7 +557,7 @@ void editscreen(int num, long *score, int *bell, int maxmoves, char keys[10])
         {
             noins();
             mmbkup = maxmoves;
-            bcopy(screen, storage, sizeof(screen));
+            memcpy(storage, screen, sizeof(screen));
             if (ch == 'p')
             {
                 debug_disp = 0;
@@ -575,7 +574,7 @@ void editscreen(int num, long *score, int *bell, int maxmoves, char keys[10])
             refresh();
             ch = (char) getchar();
             clear();
-            bcopy(storage, screen, sizeof(screen));
+            memcpy(screen, storage, sizeof(screen));
             maxmoves = mmbkup;
             debug_disp = 1;
             map(frow);

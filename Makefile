@@ -15,7 +15,7 @@ OBJS = $(patsubst %.c,%.o,$(SRCS))
 CC       ?= cc
 CFLAGS   ?= -O -s
 CFLAGS   += -std=c99 -Wall -Wextra
-CPPFLAGS += -D_POSIX_C_SOURCE=199309L
+CPPFLAGS += -D_POSIX_C_SOURCE=200809L
 LDLIBS   += -lncurses 
 
 INSTALL      = install
