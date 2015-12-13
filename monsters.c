@@ -113,9 +113,9 @@ int move_monsters(int *mxp, int *myp, long *score, char *howdead, int sx,
         addstr(buffer);
         draw_symbol(50, 11, ' ');
         move(12, 56);
-        addstr("              ");
+        printw("%14s", "");
         move(13, 56);
-        addstr("              ");
+        printw("%14s", "");
         move(16, 0);
         refresh();
     }                           /* if monster still alive */

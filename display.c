@@ -62,7 +62,7 @@ void map(char (*row_ptr)[ROWLEN + 1])
         refresh();
         getchar();
         move(18, 0);
-        addstr("                                    ");
+        printw("%36s", "");
         refresh();
         for (y = 0; y <= (NOOFROWS + 1); y++)
         {
@@ -138,7 +138,7 @@ void showname()
     move(19, 0);
     if ((screen_name[0] == '#') || (screen_name[0] == '\0'))
     {
-        addstr("Unnamed screen.                         ");
+        printw("%-40s", "Unnamed screen.");
     }
     else
         addstr(screen_name);
@@ -203,15 +203,15 @@ void redraw_screen(int *bell, int maxmoves, int num, long score, int nf,
         move(12, 56);
         addstr("Monster on the");
         move(13, 56);
-        addstr("loose!        ");
+        printw("%-14s", "loose!");
     }
     else
     {
         draw_symbol(50, 11, ' ');
         move(12, 56);
-        addstr("              ");
+        printw("%14s", "");
         move(13, 56);
-        addstr("              ");
+        printw("%14s", "");
     }
 
     showname();
@@ -245,8 +245,7 @@ int inform_me(char *s, int qable)
     if (getch() == 'q')
         retval = 1;
     move(20, 0);
-    addstr
-        ("                                                                             ");
+    printw("%77s", "");
     refresh();
     return (retval);
 }

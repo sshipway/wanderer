@@ -425,9 +425,9 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                 addstr(buffer);
                 draw_symbol(50, 11, ' ');
                 move(12, 56);
-                addstr("              ");
+                printw("%14s", "");
                 move(13, 56);
-                addstr("              ");
+                printw("%14s", "");
                 move(16, 0);
                 refresh();
             }
@@ -514,9 +514,9 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                 addstr(buffer);
                 draw_symbol(50, 11, ' ');
                 move(12, 56);
-                addstr("              ");
+                printw("%14s", "");
                 move(13, 56);
-                addstr("              ");
+                printw("%14s", "");
                 move(16, 0);
                 refresh();
             }
@@ -572,9 +572,9 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                 addstr(buffer);
                 draw_symbol(50, 11, ' ');
                 move(12, 56);
-                addstr("              ");
+                printw("%14s", "");
                 move(13, 56);
-                addstr("              ");
+                printw("%14s", "");
                 move(16, 0);
                 refresh();
             }
@@ -772,9 +772,8 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
                 move(18, 0);
             else
                 move(20, 0);
-            addstr
-                ("                                                              ");
-            addstr("\n                      ");
+            printw("%62s", "");
+            printw("\n%22s", "");
             refresh();
         }
     }

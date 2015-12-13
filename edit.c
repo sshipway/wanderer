@@ -106,7 +106,7 @@ void check_legality()
             addch(screen[y][x]);
         }
     move(20, 0);
-    addstr("                         ");
+    printw("%25s", "");
     if (cages != bmons)
     {
         ercount++;
@@ -231,12 +231,9 @@ void readstring(char *str, int size)
 void clearbottom()
 {
     move(20, 0);
-    addstr
-        ("                                                                            \n");
-    addstr
-        ("                                                                            \n");
-    addstr
-        ("                                                                            ");
+    printw("%76s\n", "");
+    printw("%76s\n", "");
+    printw("%76s", "");
 }
 
 /*****************************************
@@ -268,7 +265,7 @@ void noins()
     for (loop = 0; inst[loop]; loop++)
     {
         move(loop, 45);
-        addstr("                              ");
+        printw("%30s", "");
     }
     clearbottom();
 }
@@ -292,12 +289,11 @@ void screen_save(int maxmoves)
         addstr("./screen");
     move(20, 23);
     refresh();
-    addstr("                                   ");
+    printw("%35s", "");
     move(20, 23);
     readstring(file, 89);
     move(20, 0);
-    addstr
-        ("                                                                           ");
+    printw("%75s", "");
     refresh();
     oldname = edit_screen;
     if (file[0])
@@ -326,12 +322,11 @@ void screen_read(int *maxmoves)
     addstr("Forget it");
     move(20, 24);
     refresh();
-    addstr("                                   ");
+    printw("%35s", "");
     move(20, 24);
     readstring(file, 89);
     move(20, 0);
-    addstr
-        ("                                                                           ");
+    printw("%75s", "");
     refresh();
     if (!file[0])
         return;
@@ -358,8 +353,7 @@ void edit_save()
     refresh();
     readstring(file, 89);
     move(20, 0);
-    addstr
-        ("                                                                           ");
+    printw("%75s", "");
     refresh();
     if ((fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1)
     {
@@ -388,8 +382,7 @@ void edit_restore()
     refresh();
     readstring(file, 89);
     move(20, 0);
-    addstr
-        ("                                                                           ");
+    printw("%75s", "");
     refresh();
     move(19, 0);
     if ((fd = open(file, O_RDONLY)) == -1)
@@ -453,8 +446,7 @@ void editscreen(int num, long *score, int *bell, int maxmoves, char keys[10])
     move(18, 0);
     addstr(buffer);
     move(19, 0);
-    addstr
-        ("                                                                          ");
+    printw("%74s", "");
     move(19, 0);
     addstr("Name    : ");
     addstr(screen_name);
@@ -546,8 +538,7 @@ void editscreen(int num, long *score, int *bell, int maxmoves, char keys[10])
             screen_name[61] = '\0';
             instruct();
             move(19, 0);
-            addstr
-                ("                                                                          ");
+            printw("%74s", "");
             move(19, 0);
             addstr("Name    : ");
             addstr(screen_name);

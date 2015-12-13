@@ -44,7 +44,6 @@ int scrn_passwd(int num, char *passwd)  /* reads password num into passwd */
 void showpass(int num)
 {
     char correct[20];
-    char buffer[100];
     if (no_passwords)
         return;
     if (!debug_disp)
@@ -53,21 +52,17 @@ void showpass(int num)
         move(20, 0);
     if (!scrn_passwd(num, correct))
         return;
-    sprintf(buffer,
-            "The password to jump to level %d ( using ~ ) is : %s        \n",
-            (num + 1), correct);
-    addstr(buffer);
-    addstr
-        ("PRESS ANY KEY TO REMOVE IT AND CONTINUE                          \n");
+    printw("The password to jump to level %d ( using ~ ) is : %s        \n",
+           (num + 1), correct);
+    printw("%-65s\n", "PRESS ANY KEY TO REMOVE IT AND CONTINUE");
     refresh();
     getch();
     if (!debug_disp)
         move(18, 0);
     else
         move(20, 0);
-    addstr
-        ("                                                                        \n");
-    addstr("                                              ");
+    printw("%72s\n", "");
+    printw("%46s", "");
     if (!debug_disp)
         move(18, 0);
     else
@@ -80,7 +75,7 @@ void showpass(int num)
 ***********************************************************/
 int jumpscreen(int num)
 {
-    char word[20], buffer[100], correct[20];
+    char word[20], correct[20];
     int index = 0;
     int scrn;
     struct timespec t;
@@ -100,7 +95,7 @@ int jumpscreen(int num)
                 move(16, 0);
             else
                 move(18, 0);
-            addstr("                                                ");
+            printw("*48s", "");
             return scrn;
         }
         if (!debug_disp)
@@ -128,7 +123,7 @@ int jumpscreen(int num)
         move(16, 0);
     else
         move(18, 0);
-    addstr("Validating...                                             \n");
+    printw("%-58s\n", "Validating...");
     refresh();
 
     if (strcmp(word, MASTERPASSWORD) == 0)
@@ -141,30 +136,25 @@ int jumpscreen(int num)
         refresh();
         num = getnum();
         (void) scrn_passwd(num - 1, correct);
-        sprintf(buffer,
-                "Certainly master, but the correct word is %s.       \n",
-                correct);
         if (!debug_disp)
             move(16, 0);
         else
             move(18, 0);
-        addstr(buffer);
-        addstr
-            ("PRESS ANY KEY TO REMOVE IT AND CONTINUE                          \n");
+        printw("Certainly master, but the correct word is %s.       \n",
+               correct);
+        printw("%-65s\n", "PRESS ANY KEY TO REMOVE IT AND CONTINUE");
         refresh();
         getchar();
         if (!debug_disp)
             move(16, 0);
         else
             move(18, 0);
-        addstr
-            ("                                                             ");
+        printw("%61s", "");
         if (!debug_disp)
             move(17, 0);
         else
             move(19, 0);
-        addstr
-            ("                                                             ");
+        printw("%61s", "");
         if (!debug_disp)
             move(16, 0);
         else
@@ -183,8 +173,8 @@ int jumpscreen(int num)
                 move(16, 0);
             else
                 move(18, 0);
-            addstr
-                ("Password Validated..... Jumping to desired screen.        ");
+            printw("%-58s",
+                   "Password Validated..... Jumping to desired screen.");
             refresh();
             return ++scrn;
         }
@@ -194,7 +184,7 @@ int jumpscreen(int num)
         move(16, 0);
     else
         move(18, 0);
-    addstr("PASSWORD NOT RECOGNISED!                    ");
+    printw("%-44s", "PASSWORD NOT RECOGNISED!");
     refresh();
     t.tv_sec = 0;
     t.tv_nsec = 750000000;
@@ -203,7 +193,7 @@ int jumpscreen(int num)
         move(16, 0);
     else
         move(18, 0);
-    addstr("                                                          ");
+    printw("%61s", "");
 
     return num;
 }

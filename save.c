@@ -49,8 +49,7 @@ void save_game(int num, long *score, int *bell, int maxmoves)
         fp = fname;
     }
     move(20, 0);
-    addstr
-        ("                                                                             ");
+    printw("%77s", "");
     move(20, 0);
     refresh();
     if ((FILE *) NULL == (fo = fopen(fp, W_BIN)))

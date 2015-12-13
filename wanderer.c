@@ -97,7 +97,7 @@ void show_credits(opt)
                 if (ch == 'q')
                     break;
                 move(maxlines + 2, 0);
-                addstr("          ");
+                printw("%10s", "");
                 refresh();
                 clear();
                 linecount = 0;

@@ -248,7 +248,7 @@ void helpme(int htype)          /* routine to show help menu. */
     for (i = 0; i < 18; i++)
     {
         move(i, 0);
-        addstr("                                           ");
+        printw("%43s", "");
     }
 
     while (helplist[i2])        /* times to show loop. */
@@ -280,5 +280,5 @@ void helpme(int htype)          /* routine to show help menu. */
             break;              /* exit routine now. */
     }
     move(i, 0);                 /* move to start of line. */
-    addstr("                                        ");
+    printw("%40s", "");
 }
