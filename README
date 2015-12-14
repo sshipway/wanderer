@@ -63,6 +63,11 @@ of this use of computing time and facilities! (Only kidding)
 
                                 -Steven Shipway
 
+    Update: 2015.  Thanks to Yu-Jie Lin for doing the work to bring the code
+into the 21st century, and allowing it to compile smoothly under GCC and Linux.
+We may have lost DOS compatibility as a result, though I doubt it would have 
+compiled under most modern compilers anyway. - Steve
+
 ------------------------------------------------------------------------------
 Summary of flags:
 
