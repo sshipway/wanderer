@@ -4,6 +4,8 @@
 # and yet again by adb@bucsf.bu.edu
 # Make clean - Marina Brown marina@surferz.net 2001,2
 
+PROGRAM = wanderer
+
 TOOLS = convert passwords
 SRC_TOOLS = $(addsuffix .c,$(TOOLS))
 
@@ -13,13 +15,34 @@ OBJS = $(patsubst %.c,%.o,$(SRCS))
 CC       ?= cc
 CFLAGS   ?= -O -s
 CFLAGS   += -std=c99 -Wall -Wextra
-CPPFLAGS += -D_POSIX_C_SOURCE=199309L
+CPPFLAGS += -D_POSIX_C_SOURCE=200809L
 LDLIBS   += -lncurses 
 
-all: wanderer
+INSTALL      = install
+INSTALL_BIN  = $(INSTALL) -D -m 755
+INSTALL_DATA = $(INSTALL) -D -m 644
+INSTALL_MAN  = $(INSTALL) -D -m 644
+
+PREFIX    = /usr/local
+BIN_DIR   = $(PREFIX)/bin
+SHARE_DIR = $(PREFIX)/share
+MAN_DIR   = $(PREFIX)/share/man
+MAN1_DIR  = $(MAN_DIR)/man1
+MAN6_DIR  = $(MAN_DIR)/man6
+
+WANDERERPATH = $(SHARE_DIR)/wanderer
+SCREENPATH   = $(SHARE_DIR)/wanderer/screens
+HISCOREPATH  = $(SHARE_DIR)/wanderer/hiscore
+
+CPPFLAGS += -DPREFIX=$(PREFIX)                 \
+	    -DSCREENPATH='"$(SCREENPATH)"'     \
+	    -DHISCOREPATH='"$(HISCOREPATH)"'
+
+
+all: $(PROGRAM)
 .PHONY: all
 
-wanderer: $(OBJS)
+$(PROGRAM): $(OBJS)
 
 convert: CPPFLAGS += -D__CONVERT
 convert: convert.c encrypt.c encrypt.h
@@ -31,17 +54,14 @@ passwords: passwords.c
 %.o: %.c %.h wand_head.h
 
 install: 
-	mkdir /usr/local/share/wanderer
-	mkdir /usr/local/share/wanderer/screens
-	cp screens/* /usr/local/share/wanderer/screens
-	touch /usr/local/share/wanderer/hiscore
-	chown root.game /usr/local/share/wanderer/hiscore
-	chmod g+w /usr/local/share/wanderer/hiscore
-	cp wanderer /usr/local/bin
-	chown root.game /usr/local/bin/wanderer
-	chmod +x /usr/local/bin/wanderer
-	chmod g+s /usr/local/bin/wanderer
-	cp wanderer.6 /usr/share/man/man6
+	$(INSTALL_DATA) -t $(SCREENPATH) screens/*
+	touch $(HISCOREPATH)
+	[ $(USER) = root ] && chown root:games $(HISCOREPATH) || true
+	[ $(USER) = root ] && chmod g+w $(HISCOREPATH) || true
+	$(INSTALL_BIN) $(PROGRAM) $(BIN_DIR)/$(PROGRAM)
+	[ $(USER) = root ] && chown root:games $(BIN_DIR)/$(PROGRAM) || true
+	[ $(USER) = root ] && chmod g+s $(BIN_DIR)/$(PROGRAM) || true
+	$(INSTALL_MAN) wanderer.6 $(MAN6_DIR)
 .PHONY: install
 
 clean:
@@ -55,7 +75,7 @@ distclean:
 .PHONY: distclean
 
 uninstall:
-	$(RM)    /usr/local/bin/wanderer
-	$(RM) -r /usr/local/share/wanderer/
-	$(RM)    /usr/share/man/man6/wanderer.6
+	$(RM)    $(BIN_DIR)/$(PROGRAM)
+	$(RM) -r $(WANDERERPATH)
+	$(RM)    $(MAN6_DIR)wanderer.6
 .PHONY: uninstall

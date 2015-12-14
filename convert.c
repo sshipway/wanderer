@@ -37,25 +37,25 @@
 /**********************************************
 *          variable declarations              *
 ***********************************************/
-char screen[NOOFROWS][ROWLEN+1];
-char screen_name[ROWLEN+1];
+char screen[NOOFROWS][ROWLEN + 1];
+char screen_name[ROWLEN + 1];
 char *infile, *outfile;
 
 struct saved_game
 {
-    short   num;
-    long    score;
-    short   bell;
-    short   maxmoves;
-    short   num_monsters;
+    short num;
+    long score;
+    short bell;
+    short maxmoves;
+    short num_monsters;
 };
 
-struct    save_vars    zz;
-struct  old_save_vars   yy;
+struct save_vars zz;
+struct old_save_vars yy;
 
 int num, bell, maxmoves;
 long score;
-struct mon_rec  *last_of_list, *start_of_list, *tail_of_list;
+struct mon_rec *last_of_list, *start_of_list, *tail_of_list;
 
 int o_enc, n_enc;
 int verbose;
@@ -67,10 +67,10 @@ struct mon_rec *make_monster(int x, int y)
 {
 #define MALLOC (struct mon_rec *)malloc(sizeof(struct mon_rec))
     struct mon_rec *monster;
-    if(tail_of_list->next == NULL)
+    if (tail_of_list->next == NULL)
     {
-        if((last_of_list = MALLOC) == NULL)
-        return NULL;
+        if ((last_of_list = MALLOC) == NULL)
+            return NULL;
         tail_of_list->next = last_of_list;
         last_of_list->prev = tail_of_list;
         last_of_list->next = NULL;
@@ -78,7 +78,7 @@ struct mon_rec *make_monster(int x, int y)
     monster = tail_of_list = tail_of_list->next;
     monster->x = x;
     monster->y = y;
-    monster->mx = 1;      /* always start moving RIGHT. (fix later)  */
+    monster->mx = 1;            /* always start moving RIGHT. (fix later)  */
     monster->my = 0;
     monster->under = ' ';
     return monster;
@@ -89,15 +89,16 @@ struct mon_rec *make_monster(int x, int y)
 **************************************************/
 void save_game()
 {
-    char    fname[128], *fp;
-    FILE    *fo;
-    struct    saved_game    s;
-    extern    char    *getenv();
-    struct    mon_rec    *mp;
+    char fname[128], *fp;
+    FILE *fo;
+    struct saved_game s;
+    extern char *getenv();
+    struct mon_rec *mp;
 
     fp = outfile;
 
-    if ((FILE *)NULL == (fo = fopen(outfile, W_BIN))) {
+    if ((FILE *) NULL == (fo = fopen(outfile, W_BIN)))
+    {
         perror(fp);
         exit(1);
     }
@@ -108,15 +109,16 @@ void save_game()
     s.maxmoves = maxmoves;
     s.num_monsters = 0;
 
-    mp = start_of_list;        /* first entry is dummy    */
-    while (mp != tail_of_list) {
+    mp = start_of_list;         /* first entry is dummy    */
+    while (mp != tail_of_list)
+    {
         mp = mp->next;
-        s.num_monsters++;    /* count them monsters    */
+        s.num_monsters++;       /* count them monsters    */
     }
 
-    if ( (1 != fwrite((char *)&s, sizeof(s), 1, fo)) ||
-         (1 != fwrite((char *)screen, sizeof(screen), 1, fo)) ||
-         (1 != fwrite((char *)&zz, sizeof(zz), 1, fo)) )
+    if ((1 != fwrite((char *) &s, sizeof(s), 1, fo))
+        || (1 != fwrite((char *) screen, sizeof(screen), 1, fo))
+        || (1 != fwrite((char *) &zz, sizeof(zz), 1, fo)))
     {
         printf("Write error on '%s'\n", fname);
         fclose(fo);
@@ -125,20 +127,22 @@ void save_game()
     }
 
     mp = start_of_list;
-    while (mp != tail_of_list) {
+    while (mp != tail_of_list)
+    {
         /* save them monsters    */
         mp = mp->next;
-        if (1 != fwrite((char *)mp, sizeof(struct mon_rec), 1, fo)) {
+        if (1 != fwrite((char *) mp, sizeof(struct mon_rec), 1, fo))
+        {
             printf("Write error on '%s'\n", fname);
             fclose(fo);
             unlink(fname);
             exit(1);
         }
     }
-    fwrite(screen_name,sizeof(char),strlen(screen_name),fo);
+    fwrite(screen_name, sizeof(char), strlen(screen_name), fo);
     fclose(fo);
-    if( n_enc )
-        crypt_file(outfile);   /* encrpyt the saved game */
+    if (n_enc)
+        crypt_file(outfile);    /* encrpyt the saved game */
     printf("Game saved.\n\nWanderer Copyright (C) 1988 S Shipway\n\n");
 }
 
@@ -154,16 +158,18 @@ void restore_game()
 
     fp = infile;
 
-    if( o_enc )
-         crypt_file(infile);   /* decrypt it */
-    if ((FILE *)NULL == (fi = fopen(infile, R_BIN))) {
+    if (o_enc)
+        crypt_file(infile);     /* decrypt it */
+    if ((FILE *) NULL == (fi = fopen(infile, R_BIN)))
+    {
         printf("Open error on '%s'\n", fp);
         printf("Cannot restore game --- sorry.\n");
         exit(1);
     }
-    if ( (1 != fread((char *)&s, sizeof(s), 1, fi)) ||
-         (1 != fread((char *)screen, sizeof(screen), 1, fi)) ||
-         (1 != fread((char *)&yy, sizeof(yy), 1, fi)) ) {
+    if ((1 != fread((char *) &s, sizeof(s), 1, fi))
+        || (1 != fread((char *) screen, sizeof(screen), 1, fi))
+        || (1 != fread((char *) &yy, sizeof(yy), 1, fi)))
+    {
         printf("Read error on '%s'\n", fp);
         printf("Cannot restore game --- sorry.\n");
         fclose(fi);
@@ -177,7 +183,8 @@ void restore_game()
 
     /* free any monsters already on chain, to start clean */
     mp = start_of_list->next;
-    while ((mp != NULL) && (mp != start_of_list)) {
+    while ((mp != NULL) && (mp != start_of_list))
+    {
         /* free them monsters    */
         tmp = mp;
         mp = mp->next;
@@ -191,31 +198,34 @@ void restore_game()
     start_of_list->mx = 0;
     start_of_list->my = 0;
     start_of_list->under = 0;
-    start_of_list->next = (struct mon_rec *)NULL;
-    start_of_list->prev = (struct mon_rec *)NULL;
+    start_of_list->next = (struct mon_rec *) NULL;
+    start_of_list->prev = (struct mon_rec *) NULL;
 
     tail_of_list = start_of_list;
 
-    while (s.num_monsters--) {
+    while (s.num_monsters--)
+    {
         /* use make_monster to allocate the monster structures    */
         /* to get all the linking right without even trying    */
-        if ((struct mon_rec *)NULL == (mp = make_monster(0, 0))) {
+        if ((struct mon_rec *) NULL == (mp = make_monster(0, 0)))
+        {
             printf("Monster alloc error on '%s'\n", fp);
             printf("Try again - it might work.\nBut then,pigs might fly...\n");
             fclose(fi);
             exit(1);
         }
-        if (1 != fread((char *)&tmp_monst, sizeof(struct mon_rec), 1, fi)) {
+        if (1 != fread((char *) &tmp_monst, sizeof(struct mon_rec), 1, fi))
+        {
             printf("Monster read error on '%s'\n", fp);
             printf("Cannot restore game --- sorry.\n");
             fclose(fi);
             exit(1);
         }
         /* copy info without trashing links    */
-        mp->x     = tmp_monst.x;
-        mp->y     = tmp_monst.y;
-        mp->mx    = tmp_monst.mx;
-        mp->my    = tmp_monst.my;
+        mp->x = tmp_monst.x;
+        mp->y = tmp_monst.y;
+        mp->mx = tmp_monst.mx;
+        mp->my = tmp_monst.my;
         mp->under = tmp_monst.under;
     }
     fclose(fi);
@@ -224,7 +234,7 @@ void restore_game()
 /*************************************************************
 *         external globals - move to top  Marina             *
 **************************************************************/
-extern int opterr,optind;
+extern int opterr, optind;
 extern char *optarg;
 
 /**************************************************************
@@ -244,24 +254,38 @@ int main(int argc, char **argv)
     o_enc = n_enc = 1;
 #endif
 
-    while( ( c = getopt(argc,argv,"CNcnv") ) != -1 )
-    switch ( c ) 
-    {
-        case 'C': o_enc = 1; break;
-        case 'c': n_enc = 1; break;
-        case 'N': o_enc = 0; break;
-        case 'n': n_enc = 0; break;
-        case 'v': verbose = 1; break;
-        default : printf("Usage: %s [ -v ] [ -C | -c ] [ -N | -n ] oldfile newfile\n",argv[0]);
+    while ((c = getopt(argc, argv, "CNcnv")) != -1)
+        switch (c)
+        {
+        case 'C':
+            o_enc = 1;
+            break;
+        case 'c':
+            n_enc = 1;
+            break;
+        case 'N':
+            o_enc = 0;
+            break;
+        case 'n':
+            n_enc = 0;
+            break;
+        case 'v':
+            verbose = 1;
+            break;
+        default:
+            printf
+                ("Usage: %s [ -v ] [ -C | -c ] [ -N | -n ] oldfile newfile\n",
+                 argv[0]);
             printf("-v : verbose\n");
             printf("-C : file is encrypted\n -N : file not encrypted\n");
             printf("Upper case -- old file, lower case -- new file\n");
             exit(1);
-    }
+        }
 
-    if( (argc - optind) < 2 )
+    if ((argc - optind) < 2)
     {
-        printf("Usage: %s [ -v ] [ -C | -c ] [ -N | -n ] oldfile newfile\n",argv[0]);
+        printf("Usage: %s [ -v ] [ -C | -c ] [ -N | -n ] oldfile newfile\n",
+               argv[0]);
         printf("-v : verbose\n");
         printf("-C : file is encrypted\n -N : file not encrypted\n");
         printf("Upper case -- old file, lower case -- new file\n");
@@ -269,24 +293,29 @@ int main(int argc, char **argv)
     }
 
 
-    infile = argv[optind++]; outfile = argv[optind];
-    if(verbose) printf("Converting %s to %s.\n",infile,outfile);
+    infile = argv[optind++];
+    outfile = argv[optind];
+    if (verbose)
+        printf("Converting %s to %s.\n", infile, outfile);
 
-    if(verbose )
+    if (verbose)
     {
-        printf( "Reading in file %s. ", infile);
-        if( o_enc ) printf("(encrypted)");
+        printf("Reading in file %s. ", infile);
+        if (o_enc)
+            printf("(encrypted)");
         printf("\n");
     }
 
     restore_game();
 
-    if( verbose ) printf("Giving screen name.\n");
+    if (verbose)
+        printf("Giving screen name.\n");
 
-    sprintf(screen_name,"------ Wanderer version %s ------",VERSION);
+    sprintf(screen_name, "------ Wanderer version %s ------", VERSION);
 
-    if( verbose ) printf(" Copying struct variables... \n");
-    
+    if (verbose)
+        printf(" Copying struct variables... \n");
+
     zz.z_x = yy.z_x;
     zz.z_y = yy.z_y;
     zz.z_tx = yy.z_tx;
@@ -298,10 +327,11 @@ int main(int argc, char **argv)
     zz.z_diamonds = yy.z_diamonds;
     zz.z_nf = yy.z_nf;
 
-    if(verbose)
+    if (verbose)
     {
-        printf( "Saving to file %s. ", outfile);
-        if( n_enc ) printf("(encrypted)");
+        printf("Saving to file %s. ", outfile);
+        if (n_enc)
+            printf("(encrypted)");
         printf("\n");
     }
 
