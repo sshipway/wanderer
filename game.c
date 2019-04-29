@@ -52,7 +52,8 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
     int x, y, nx, ny, deadyet = 0, sx = -1, sy = -1, tx = -1, ty =
         -1, lx = 0, ly = 0, mx = -1, my = -1, newnum, recording = 0, diamonds =
         0, nf = 0, tmpx, tmpy;
-    char (*frow)[ROWLEN + 1] = screen, ch, *memory_ptr, buffer[25];
+    char (*frow)[ROWLEN + 1] = screen, *memory_ptr, buffer[25];
+    int ch;
     struct mon_rec *monster;
     static char howdead[25];    /* M001 can't use auto var for return value */
 
@@ -127,6 +128,8 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
     redraw_screen(bell, maxmoves, *num, *score, nf, diamonds, mx, sx, sy,
                   frow);
 
+    keypad(stdscr, TRUE); // Enable arrow keys
+
 /* ACTUAL GAME FUNCTION - Returns method of death in string  */
 
     while (deadyet == 0)
@@ -156,14 +159,14 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
         nx = x;
         ny = y;
 
-        if ((ch == keys[3]) && (x < (ROWLEN - 1)))
+        if (((ch == keys[3]) || (ch == KEY_RIGHT)) && (x < (ROWLEN - 1))) // RIGHT
             /* move about - but thats obvious */
             nx++;
-        if ((ch == keys[2]) && (x > 0))
+        if (((ch == keys[2]) || (ch == KEY_LEFT)) && (x > 0)) // LEFT
             nx--;
-        if ((ch == keys[1]) && (y < (NOOFROWS - 1)))
+        if (((ch == keys[1]) || (ch == KEY_DOWN))  && (y < (NOOFROWS - 1))) // DOWN
             ny++;
-        if ((ch == keys[0]) && (y > 0))
+        if (((ch == keys[0]) || (ch == KEY_UP))  && (y > 0)) // UP
             ny--;
         if (ch == '1')          /* Add or get rid of that awful sound */
         {
