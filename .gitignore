@@ -33,3 +33,8 @@ wanderer
 
 # Debug files
 *.dSYM/
+
+# Test data
+hiscore
+savegame
+keypress

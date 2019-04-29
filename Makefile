@@ -79,3 +79,11 @@ uninstall:
 	$(RM) -r $(WANDERERPATH)
 	$(RM)    $(MAN6_DIR)wanderer.6
 .PHONY: uninstall
+
+test: wanderer
+	touch hiscore
+	echo -e "#hljkSsavegame\n" > keypress
+	HISCOREPATH=hiscore ./wanderer < keypress
+	./passwords 1000
+
+
