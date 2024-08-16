@@ -213,7 +213,7 @@ int main(int argc, char **argv)
     char *name;
     char *keys;
     char *dead;
-    char c;
+    int c;
 
     // if found screens in current directory, then use it;
     // otherwise, use SCREENPATH
