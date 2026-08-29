@@ -35,7 +35,7 @@ extern struct mon_rec start_of_list, *tail_of_list;
 **********************************************************/
 void save_game(int num, long *score, int *bell, int maxmoves)
 {
-    char fname[128], buf[70], *fp;
+    char fname[128], buf[160], *fp;
     FILE *fo;
     struct saved_game s;
     struct mon_rec *mp;
@@ -75,10 +75,10 @@ void save_game(int num, long *score, int *bell, int maxmoves)
         || (1 != fwrite((char *) screen, sizeof(screen), 1, fo))
         || (1 != fwrite((char *) &zz, sizeof(zz), 1, fo)))
     {
-        sprintf(buf, "Write error on '%s'\n", fname);
+        snprintf(buf, sizeof(buf), "Write error on '%s'\n", fp);
         inform_me(buf, 0);
         fclose(fo);
-        unlink(fname);
+        unlink(fp);
         return;
     }
 
@@ -89,10 +89,10 @@ void save_game(int num, long *score, int *bell, int maxmoves)
         mp = mp->next;
         if (1 != fwrite((char *) mp, sizeof(struct mon_rec), 1, fo))
         {
-            sprintf(buf, "Write error on '%s'\n", fname);
+            snprintf(buf, sizeof(buf), "Write error on '%s'\n", fp);
             inform_me(buf, 0);
             fclose(fo);
-            unlink(fname);
+            unlink(fp);
             return;
         }
     }

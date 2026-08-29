@@ -535,7 +535,6 @@ void editscreen(int num, long *score, int *bell, int maxmoves, char keys[10])
             addstr("New name: ");
             refresh();
             readstring(screen_name, 58);
-            screen_name[61] = '\0';
             instruct();
             move(19, 0);
             printw("%74s", "");

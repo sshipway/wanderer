@@ -95,7 +95,7 @@ int jumpscreen(int num)
                 move(16, 0);
             else
                 move(18, 0);
-            printw("*48s", "");
+            printw("%48s", "");
             return scrn;
         }
         if (!debug_disp)
