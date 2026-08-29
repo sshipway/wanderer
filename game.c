@@ -52,7 +52,7 @@ char *playscreen(int *num, long *score, int *bell, int maxmoves, char keys[10])
     int x, y, nx, ny, deadyet = 0, sx = -1, sy = -1, tx = -1, ty =
         -1, lx = 0, ly = 0, mx = -1, my = -1, newnum, recording = 0, diamonds =
         0, nf = 0, tmpx, tmpy;
-    char (*frow)[ROWLEN + 1] = screen, *memory_ptr, buffer[25];
+    char (*frow)[ROWLEN + 1] = screen, *memory_ptr, buffer[32];
     int ch;
     struct mon_rec *monster;
     static char howdead[25];    /* M001 can't use auto var for return value */
