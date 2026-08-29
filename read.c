@@ -18,7 +18,7 @@ extern char *screenpath;
 
 extern char screen_name[61];
 
-char buffer[80];
+char buffer[128];
 
 /****************************************************************************
 *                                   rscreen                                 *
@@ -28,6 +28,7 @@ int rscreen(int num, int *maxmoves)
     int y, numr;
     FILE *fp;
     char name[100];
+    char line[ROWLEN + 3]; /* ROWLEN chars + '\n' + '\0' */
     char (*row_ptr)[ROWLEN + 1] = screen;
     if (!edit_mode)
         sprintf(name, "%s/screen.%d", screenpath, num);
@@ -51,14 +52,16 @@ int rscreen(int num, int *maxmoves)
     {
         for (y = 0; y < NOOFROWS; y++)
         {
-            if (fgets(*row_ptr, ROWLEN + 2, fp) == NULL)
+            if (fgets(line, sizeof(line), fp) == NULL)
             {
                 fprintf(stderr, "fgets error\n");
                 exit(EXIT_FAILURE);
             }
-            numr = strlen(*row_ptr) - 1;
+            numr = strcspn(line, "\n");
             while (numr < ROWLEN)
-                (*row_ptr)[numr++] = ' ';
+                line[numr++] = ' ';
+            memcpy(*row_ptr, line, ROWLEN);
+            (*row_ptr)[ROWLEN] = '\0';
             row_ptr++;
         };
         if (fgets(screen_name, 60, fp) == NULL)
@@ -66,8 +69,7 @@ int rscreen(int num, int *maxmoves)
             fprintf(stderr, "fgets error\n");
             exit(EXIT_FAILURE);
         }
-        screen_name[61] = '\0';
-        screen_name[strlen(screen_name) - 1] = '\0';
+        screen_name[strcspn(screen_name, "\n")] = '\0';
         if (fscanf(fp, "%d", maxmoves) != 1)
             *maxmoves = 0;
         fclose(fp);
@@ -99,7 +101,7 @@ int wscreen(int maxmoves)
             inform_me(buffer, 0);
         }
         else
-            err(1, "Could not open %s.\n", buffer);
+            err(1, "Could not open %s.\n", name);
     }
     if (fp == NULL)
     {
